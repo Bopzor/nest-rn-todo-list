@@ -2,7 +2,9 @@ import { BadRequestException, Body, Controller, HttpCode, HttpStatus, Post } fro
 
 import { AuthenticationService } from './authentication.service';
 import { CreateUserDto } from './dtos/create-user.dto';
+import { LogUserDto } from './dtos/log-user.dto';
 import { UserDto } from './dtos/user.dto';
+import { InvalidCredentialsError } from './errors/invalid-credentials.error';
 import { UsernameAlreadyExistError } from './errors/username-already-exist.error';
 
 @Controller('auth')
@@ -17,6 +19,22 @@ export class AuthenticationController {
       return new UserDto(user);
     } catch (error) {
       if (error instanceof UsernameAlreadyExistError) {
+        throw new BadRequestException(error.message);
+      }
+
+      throw error;
+    }
+  }
+
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
+  async login(@Body() dto: LogUserDto): Promise<UserDto> {
+    try {
+      const user = await this.authenticationService.logUser(dto);
+
+      return new UserDto(user);
+    } catch (error) {
+      if (error instanceof InvalidCredentialsError) {
         throw new BadRequestException(error.message);
       }
 
