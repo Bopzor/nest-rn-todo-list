@@ -1,0 +1,81 @@
+import { HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common';
+import { Test } from '@nestjs/testing';
+import request, { SuperAgentTest } from 'supertest';
+
+import { createUser } from '../tests/factories';
+
+import { AuthenticationModule } from './authentication.module';
+import { AuthenticationService } from './authentication.service';
+import { CreateUserDto } from './dtos/create-user.dto';
+import { UsernameAlreadyExistError } from './errors/username-already-exist.error';
+
+class MockAuthenticationService extends AuthenticationService {
+  createUser = jest.fn();
+}
+
+describe('AuthenticationController', () => {
+  let app: INestApplication;
+  let agent: SuperAgentTest;
+  let authenticationService: MockAuthenticationService;
+
+  beforeEach(async () => {
+    const module = await Test.createTestingModule({
+      imports: [AuthenticationModule],
+    })
+      .overrideProvider(AuthenticationService)
+      .useClass(MockAuthenticationService)
+      .compile();
+
+    app = module.createNestApplication();
+    app.useGlobalPipes(new ValidationPipe());
+    await app.init();
+  });
+
+  beforeEach(() => {
+    authenticationService = app.get(AuthenticationService);
+    agent = request.agent(app.getHttpServer());
+  });
+
+  describe('signup', () => {
+    it('creates a user', async () => {
+      const body: CreateUserDto = {
+        username: 'azot',
+        lastName: 'Toza',
+        firstName: 'Azot',
+        password: 'p4ssWord',
+      };
+
+      await authenticationService.createUser.mockResolvedValueOnce(createUser());
+
+      await agent.post('/auth/signup').send(body).expect(HttpStatus.CREATED);
+
+      expect(authenticationService.createUser).toHaveBeenCalledWith(body);
+    });
+
+    it('throws an error if username is already taken', async () => {
+      const body: CreateUserDto = {
+        username: 'azot',
+        lastName: 'Toza',
+        firstName: 'Azot',
+        password: 'p4ssWord',
+      };
+
+      await authenticationService.createUser.mockRejectedValueOnce(new UsernameAlreadyExistError(body.username));
+
+      await agent.post('/auth/signup').send(body).expect(HttpStatus.BAD_REQUEST);
+    });
+
+    it('throws an error if password is not secure', async () => {
+      const body: CreateUserDto = {
+        username: 'azot',
+        lastName: 'Toza',
+        firstName: 'Azot',
+        password: 'password',
+      };
+
+      await authenticationService.createUser.mockRejectedValueOnce(new UsernameAlreadyExistError(body.username));
+
+      await agent.post('/auth/signup').send(body).expect(HttpStatus.BAD_REQUEST);
+    });
+  });
+});
