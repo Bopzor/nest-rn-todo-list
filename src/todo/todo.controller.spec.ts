@@ -1,4 +1,4 @@
-import { HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common';
+import { ForbiddenException, HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import request, { SuperAgentTest } from 'supertest';
 
@@ -15,6 +15,7 @@ import { CreateTodoDto } from './dtos/create-todo.dto';
 class MockTodoService extends TodoService {
   getAllForUser = jest.fn();
   createTodo = jest.fn();
+  updateTodo = jest.fn();
 }
 
 describe('TodoController', () => {
@@ -102,6 +103,45 @@ describe('TodoController', () => {
       };
 
       await agent.post('/todos').set('Authorization', `Bearer ${user.token}`).send(body).expect(HttpStatus.BAD_REQUEST);
+    });
+  });
+
+  describe('PATCH todos/:id', () => {
+    it('edit a todo', async () => {
+      const user = createUser({ token: 'token' });
+      userRepository.users = [user];
+      const body: CreateTodoDto = {
+        title: 'edited title',
+        description: 'edited description',
+      };
+      const todo = createTodo({ ...body, user_id: user.id, id: 'id-1' });
+
+      await todoService.updateTodo.mockResolvedValueOnce(todo);
+
+      const response = await agent
+        .patch(`/todos/${todo.id}`)
+        .set('Authorization', `Bearer ${user.token}`)
+        .send(body)
+        .expect(HttpStatus.OK);
+
+      expect(response.body).toMatchObject(new TodoDto(todo));
+    });
+
+    it('throws an error if todo is not one of the user', async () => {
+      const user = createUser({ token: 'token' });
+      userRepository.users = [user];
+      const body: CreateTodoDto = {
+        title: 'edited title',
+        description: 'edited description',
+      };
+
+      await todoService.updateTodo.mockRejectedValueOnce(new ForbiddenException());
+
+      await agent
+        .patch(`/todos/not-my-todo`)
+        .set('Authorization', `Bearer ${user.token}`)
+        .send(body)
+        .expect(HttpStatus.FORBIDDEN);
     });
   });
 });

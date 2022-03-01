@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 
 import { GeneratorPort } from '../utils/generator.port';
 import { Todo } from '../entities/Todo';
 
 import { CreateTodoDto } from './dtos/create-todo.dto';
 import { TodoRepository } from './todo.repository';
+import { UpdateTodoDto } from './dtos/update-todo.dto';
 
 @Injectable()
 export class TodoService {
@@ -27,5 +28,30 @@ export class TodoService {
     await this.todoRepository.saveTodo(todo);
 
     return todo;
+  }
+
+  async updateTodo(userId: string, todoId: string, dto: UpdateTodoDto): Promise<Todo> {
+    try {
+      const currentTodo = await this.todoRepository.findById(todoId);
+
+      if (!currentTodo) {
+        throw new NotFoundException();
+      }
+
+      if (currentTodo.user_id !== userId) {
+        throw new ForbiddenException();
+      }
+
+      const todo = new Todo({
+        ...currentTodo,
+        ...dto,
+      });
+
+      await this.todoRepository.saveTodo(todo);
+
+      return todo;
+    } catch (error) {
+      throw error;
+    }
   }
 }

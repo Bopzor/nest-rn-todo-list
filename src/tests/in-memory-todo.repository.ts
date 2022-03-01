@@ -8,7 +8,23 @@ export class InMemoryTodoRepository implements TodoRepository {
     return this.todos.filter((t) => t.user_id === userId);
   }
 
+  async findById(todoId: string): Promise<Todo | undefined> {
+    return this.todos.find((t) => t.id === todoId);
+  }
+
   async saveTodo(todo: Todo): Promise<void> {
-    this.todos.push(todo);
+    const todoIdx = this.todos.findIndex((t) => t.id === todo.id);
+
+    if (todoIdx < 0) {
+      this.todos.push(todo);
+      return;
+    }
+
+    // prettier-ignore
+    this.todos = [
+      ...this.todos.slice(0, todoIdx),
+      todo,
+      ...this.todos.slice(todoIdx + 1)
+    ]
   }
 }
