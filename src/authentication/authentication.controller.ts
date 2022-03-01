@@ -1,4 +1,6 @@
-import { BadRequestException, Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
+
+import { RequestWithUser } from '../utils/request-with-user';
 
 import { AuthenticationService } from './authentication.service';
 import { CreateUserDto } from './dtos/create-user.dto';
@@ -6,15 +8,19 @@ import { LogUserDto } from './dtos/log-user.dto';
 import { UserDto } from './dtos/user.dto';
 import { InvalidCredentialsError } from './errors/invalid-credentials.error';
 import { UsernameAlreadyExistError } from './errors/username-already-exist.error';
+import { IsNotAuth } from './guards/is-not-authenticated.guard';
 
 @Controller('auth')
 export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
 
+  @UseGuards(IsNotAuth)
   @Post('signup')
-  async signup(@Body() dto: CreateUserDto): Promise<UserDto> {
+  async signup(@Body() dto: CreateUserDto, @Req() request: RequestWithUser): Promise<UserDto> {
     try {
       const user = await this.authenticationService.createUser(dto);
+
+      request.user = user;
 
       return new UserDto(user);
     } catch (error) {
@@ -26,11 +32,14 @@ export class AuthenticationController {
     }
   }
 
+  @UseGuards(IsNotAuth)
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  async login(@Body() dto: LogUserDto): Promise<UserDto> {
+  async login(@Body() dto: LogUserDto, @Req() request: RequestWithUser): Promise<UserDto> {
     try {
       const user = await this.authenticationService.logUser(dto);
+
+      request.user = user;
 
       return new UserDto(user);
     } catch (error) {

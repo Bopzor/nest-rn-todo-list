@@ -11,4 +11,8 @@ export class InMemoryUserRepository implements UserRepository {
   async findByUsername(username: string): Promise<User | undefined> {
     return this.users.find((u) => u.username === username);
   }
+
+  async findByToken(token: string): Promise<User | undefined> {
+    return this.users.find((u) => u.token === token);
+  }
 }
