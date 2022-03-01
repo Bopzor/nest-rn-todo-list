@@ -40,7 +40,7 @@ describe('AuthenticationController', () => {
     agent = request.agent(app.getHttpServer());
   });
 
-  describe('signup', () => {
+  describe('POST signup', () => {
     it('creates a user', async () => {
       const body: CreateUserDto = {
         username: 'azot',
@@ -85,7 +85,7 @@ describe('AuthenticationController', () => {
     });
   });
 
-  describe('login', () => {
+  describe('POST login', () => {
     it('logs in the existing user', async () => {
       const user = createUser({ token: 'token' });
 
