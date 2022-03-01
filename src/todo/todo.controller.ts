@@ -16,9 +16,9 @@ export class TodoController {
 
   @UseGuards(IsAuth)
   @Get()
-  async getAllTodos(@GetUser() user: User): Promise<TodoDto[]> {
+  async getAllTodos(@GetUser('id') userId: string): Promise<TodoDto[]> {
     try {
-      const todos = await this.todoService.getAllForUser(user.id);
+      const todos = await this.todoService.getAllForUser(userId);
 
       return todos.map((todo: Todo) => new TodoDto(todo));
     } catch (error) {
@@ -28,9 +28,9 @@ export class TodoController {
 
   @UseGuards(IsAuth)
   @Post()
-  async createTodo(@GetUser() user: User, @Body() dto: CreateTodoDto): Promise<TodoDto> {
+  async createTodo(@GetUser('id') userId: string, @Body() dto: CreateTodoDto): Promise<TodoDto> {
     try {
-      const todo = await this.todoService.createTodoForUser(user.id, dto);
+      const todo = await this.todoService.createTodoForUser(userId, dto);
 
       return new TodoDto(todo);
     } catch (error) {
@@ -48,6 +48,19 @@ export class TodoController {
   ): Promise<TodoDto> {
     try {
       const todo = await this.todoService.updateTodo(userId, todoId, dto);
+
+      return new TodoDto(todo);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @UseGuards(IsAuth)
+  @Patch('/:id/toggle')
+  @HttpCode(HttpStatus.OK)
+  async toggleTodo(@GetUser('id') userId: string, @Param('id') todoId: string): Promise<TodoDto> {
+    try {
+      const todo = await this.todoService.toggleTodo(userId, todoId);
 
       return new TodoDto(todo);
     } catch (error) {

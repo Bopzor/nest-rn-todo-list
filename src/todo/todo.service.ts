@@ -54,4 +54,29 @@ export class TodoService {
       throw error;
     }
   }
+
+  async toggleTodo(userId: string, todoId: string): Promise<Todo> {
+    try {
+      const currentTodo = await this.todoRepository.findById(todoId);
+
+      if (!currentTodo) {
+        throw new NotFoundException();
+      }
+
+      if (currentTodo.user_id !== userId) {
+        throw new ForbiddenException();
+      }
+
+      const todo = new Todo({
+        ...currentTodo,
+        checked: !currentTodo.checked,
+      });
+
+      await this.todoRepository.saveTodo(todo);
+
+      return currentTodo;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

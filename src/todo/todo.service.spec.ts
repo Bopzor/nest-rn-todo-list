@@ -129,4 +129,42 @@ describe('TodoService', () => {
       await expect(() => todoService.updateTodo(user.id, todo.id, dto)).rejects.toThrow(new ForbiddenException());
     });
   });
+
+  describe('toggleTodo', () => {
+    it('toggles a todo if it match user id', async () => {
+      const user = createUser();
+      const todo = createTodo({ user_id: user.id });
+      todoRepository.todos = [todo];
+
+      await todoService.toggleTodo(user.id, todo.id);
+
+      expect(todoRepository.todos[0]).toHaveProperty('checked', true);
+
+      await todoService.toggleTodo(user.id, todo.id);
+
+      expect(todoRepository.todos[0]).toHaveProperty('checked', false);
+    });
+
+    it('throws a NOT FOUND error if no todo is found', async () => {
+      const user = createUser();
+      const dto: UpdateTodoDto = {
+        title: 'edited title',
+        description: 'edited description',
+      };
+
+      await expect(() => todoService.updateTodo(user.id, 'todo-id', dto)).rejects.toThrow(new NotFoundException());
+    });
+
+    it('throws a FORBIDDEN error if the todo is not associated to the user', async () => {
+      const user = createUser();
+      const todo = createTodo();
+      todoRepository.todos = [todo];
+      const dto: UpdateTodoDto = {
+        title: 'edited title',
+        description: 'edited description',
+      };
+
+      await expect(() => todoService.updateTodo(user.id, todo.id, dto)).rejects.toThrow(new ForbiddenException());
+    });
+  });
 });

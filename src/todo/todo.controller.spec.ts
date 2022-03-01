@@ -1,4 +1,4 @@
-import { ForbiddenException, HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common';
+import { ForbiddenException, HttpStatus, INestApplication, NotFoundException, ValidationPipe } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import request, { SuperAgentTest } from 'supertest';
 
@@ -16,6 +16,7 @@ class MockTodoService extends TodoService {
   getAllForUser = jest.fn();
   createTodo = jest.fn();
   updateTodo = jest.fn();
+  toggleTodo = jest.fn();
 }
 
 describe('TodoController', () => {
@@ -142,6 +143,66 @@ describe('TodoController', () => {
         .set('Authorization', `Bearer ${user.token}`)
         .send(body)
         .expect(HttpStatus.FORBIDDEN);
+    });
+
+    it('throws an error if todo does not exist', async () => {
+      const user = createUser({ token: 'token' });
+      userRepository.users = [user];
+      const body: CreateTodoDto = {
+        title: 'edited title',
+        description: 'edited description',
+      };
+
+      await todoService.updateTodo.mockRejectedValueOnce(new NotFoundException());
+
+      await agent
+        .patch(`/todos/not-my-todo`)
+        .set('Authorization', `Bearer ${user.token}`)
+        .send(body)
+        .expect(HttpStatus.NOT_FOUND);
+    });
+  });
+
+  describe('PATCH todos/:id/toggle', () => {
+    it('toggles a todo', async () => {
+      const user = createUser({ token: 'token' });
+      userRepository.users = [user];
+      const todo = createTodo({ user_id: user.id, id: 'id-1' });
+
+      await todoService.toggleTodo.mockResolvedValueOnce({ ...todo, checked: !todo.checked });
+
+      const response = await agent
+        .patch(`/todos/${todo.id}/toggle`)
+        .set('Authorization', `Bearer ${user.token}`)
+        .expect(HttpStatus.OK);
+
+      expect(response.body).toMatchObject(new TodoDto({ ...todo, checked: !todo.checked }));
+    });
+
+    it('throws an error if todo is not one of the user', async () => {
+      const user = createUser({ token: 'token' });
+      userRepository.users = [user];
+      const todo = createTodo({ user_id: user.id, id: 'id-1' });
+
+      await todoService.toggleTodo.mockRejectedValueOnce(new ForbiddenException());
+
+      await agent
+        .patch(`/todos/${todo.id}/toggle`)
+        .set('Authorization', `Bearer ${user.token}`)
+        .expect(HttpStatus.FORBIDDEN);
+    });
+
+    it('throws an error if todo is not found', async () => {
+      const user = createUser({ token: 'token' });
+      userRepository.users = [user];
+      const todo = createTodo({ user_id: user.id, id: 'id-1' });
+
+      await todoService.toggleTodo.mockRejectedValueOnce(new NotFoundException());
+
+      await agent
+        .patch(`/todos/${todo.id}/toggle`)
+        .set('Authorization', `Bearer ${user.token}`)
+        .expect(HttpStatus.NOT_FOUND);
     });
   });
 });
