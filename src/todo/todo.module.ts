@@ -1,6 +1,7 @@
 import { ClassProvider, Module } from '@nestjs/common';
 
 import { InMemoryTodoRepository } from '../tests/in-memory-todo.repository';
+import { GeneratorModule } from '../utils/generator.module';
 
 import { TodoController } from './todo.controller';
 import { TodoRepository } from './todo.repository';
@@ -12,7 +13,7 @@ export const todoRepositoryProvider: ClassProvider<TodoRepository> = {
 };
 
 @Module({
-  imports: [],
+  imports: [GeneratorModule],
   controllers: [TodoController],
   providers: [TodoService, todoRepositoryProvider],
 })

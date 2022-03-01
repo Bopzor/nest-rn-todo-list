@@ -1,12 +1,14 @@
 import { Test } from '@nestjs/testing';
 
 import { InMemoryTodoRepository } from '../tests/in-memory-todo.repository';
-import { createTodo } from '../tests/factories';
+import { createTodo, createUser } from '../tests/factories';
+import { GeneratorModule } from '../utils/generator.module';
 
 import { TodoController } from './todo.controller';
 import { todoRepositoryProvider } from './todo.module';
 import { TodoRepository } from './todo.repository';
 import { TodoService } from './todo.service';
+import { CreateTodoDto } from './dtos/create-todo.dto';
 
 describe('TodoService', () => {
   let todoService: TodoService;
@@ -14,7 +16,7 @@ describe('TodoService', () => {
 
   beforeEach(async () => {
     const app = await Test.createTestingModule({
-      imports: [],
+      imports: [GeneratorModule],
       controllers: [TodoController],
       providers: [TodoService, todoRepositoryProvider],
     }).compile();
@@ -36,6 +38,23 @@ describe('TodoService', () => {
       todoRepository.todos = todos;
 
       expect(await todoService.getAllForUser('user_id')).toMatchObject([]);
+    });
+  });
+
+  describe('createTodoForUser', () => {
+    it('creates a todo associated to given user', async () => {
+      const user = createUser();
+      const todo: CreateTodoDto = {
+        title: 'title',
+      };
+
+      await todoService.createTodoForUser(user.id, todo);
+
+      expect(todoRepository.todos[0]).toMatchObject({
+        ...todo,
+        user_id: user.id,
+        checked: false,
+      });
     });
   });
 });

@@ -7,4 +7,8 @@ export class InMemoryTodoRepository implements TodoRepository {
   async findAllForUser(userId: string): Promise<Todo[]> {
     return this.todos.filter((t) => t.user_id === userId);
   }
+
+  async saveTodo(todo: Todo): Promise<void> {
+    this.todos.push(todo);
+  }
 }

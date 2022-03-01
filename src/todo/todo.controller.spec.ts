@@ -4,14 +4,17 @@ import request, { SuperAgentTest } from 'supertest';
 
 import { AuthorizationModule } from '../authorization/authorization.module';
 import { InMemoryUserRepository } from '../tests/in-memory-user.repository';
-import { createUser } from '../tests/factories';
+import { createTodo, createUser } from '../tests/factories';
 import { UserRepository } from '../user/user.repository';
 
 import { TodoModule } from './todo.module';
 import { TodoService } from './todo.service';
+import { TodoDto } from './dtos/todo.dto';
+import { CreateTodoDto } from './dtos/create-todo.dto';
 
 class MockTodoService extends TodoService {
   getAllForUser = jest.fn();
+  createTodo = jest.fn();
 }
 
 describe('TodoController', () => {
@@ -53,6 +56,52 @@ describe('TodoController', () => {
 
     it('throws Forbidden error if no user is connected', async () => {
       await agent.get('/todos').expect(HttpStatus.FORBIDDEN);
+    });
+  });
+
+  describe('POST todos', () => {
+    it('creates a todo', async () => {
+      const user = createUser({ token: 'token' });
+      userRepository.users = [user];
+      const body: CreateTodoDto = {
+        title: 'title',
+        description: 'description',
+      };
+      const todo = createTodo({ ...body, user_id: user.id });
+
+      await todoService.createTodo.mockResolvedValueOnce(todo);
+
+      const response = await agent
+        .post('/todos')
+        .set('Authorization', `Bearer ${user.token}`)
+        .send(body)
+        .expect(HttpStatus.CREATED);
+
+      expect(response.body).toMatchObject(new TodoDto(todo));
+    });
+
+    it('creates a todo with an empty description', async () => {
+      const user = createUser({ token: 'token' });
+      userRepository.users = [user];
+      const body: CreateTodoDto = {
+        title: 'title',
+      };
+      const todo = createTodo({ ...body, user_id: user.id });
+
+      await todoService.createTodo.mockResolvedValueOnce(todo);
+
+      await agent.post('/todos').set('Authorization', `Bearer ${user.token}`).send(body).expect(HttpStatus.CREATED);
+    });
+
+    it('throws BAD REQUEST error if no title is given', async () => {
+      const user = createUser({ token: 'token' });
+      userRepository.users = [user];
+      const body: CreateTodoDto = {
+        title: '',
+        description: 'description',
+      };
+
+      await agent.post('/todos').set('Authorization', `Bearer ${user.token}`).send(body).expect(HttpStatus.BAD_REQUEST);
     });
   });
 });
