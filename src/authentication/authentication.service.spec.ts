@@ -1,21 +1,29 @@
-import { StubCryptoAdapter } from '../tests/stub-crypto.adapter';
-import { StubGeneratorAdapter } from '../tests/stub-generator.adapter';
+import { Test, TestingModule } from '@nestjs/testing';
+
 import { createUser } from '../tests/factories';
 import { InMemoryUserRepository } from '../tests/in-memory-user.repository';
+import { UserRepository } from '../user/user.repository';
+import { UserModule } from '../user/user.module';
+import { CryptoModule } from '../utils/crypto.module';
+import { GeneratorModule } from '../utils/generator.module';
 
 import { AuthenticationService } from './authentication.service';
 import { InvalidCredentialsError } from './errors/invalid-credentials.error';
+import { AuthenticationController } from './authentication.controller';
 
 describe('AuthenticationService', () => {
   let authenticationService: AuthenticationService;
   let userRepository: InMemoryUserRepository;
 
   beforeEach(async () => {
-    userRepository = new InMemoryUserRepository();
-    const crypto = new StubCryptoAdapter();
-    const generator = new StubGeneratorAdapter();
+    const app = await Test.createTestingModule({
+      imports: [UserModule, CryptoModule, GeneratorModule],
+      controllers: [AuthenticationController],
+      providers: [AuthenticationService],
+    }).compile();
 
-    authenticationService = new AuthenticationService(userRepository, crypto, generator);
+    authenticationService = app.get(AuthenticationService);
+    userRepository = app.get(UserRepository);
   });
 
   describe('signup', () => {

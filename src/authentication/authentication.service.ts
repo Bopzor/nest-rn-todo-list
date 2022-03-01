@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { UserModule } from 'user/user.module';
 
 import { User } from '../entities/User';
 import { UserRepository } from '../user/user.repository';
@@ -11,7 +12,11 @@ import { InvalidCredentialsError } from './errors/invalid-credentials.error';
 
 @Injectable()
 export class AuthenticationService {
-  constructor(private userRepository: UserRepository, private crypto: CryptoPort, private generator: GeneratorPort) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly crypto: CryptoPort,
+    private readonly generator: GeneratorPort,
+  ) {}
 
   async createUser(dto: CreateUserDto): Promise<User> {
     const id = this.generator.generateId();
