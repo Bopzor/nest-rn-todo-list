@@ -1,6 +1,7 @@
 import { IsNotEmpty, Matches } from 'class-validator';
+import { ISignupUserDto } from 'todo-shared';
 
-export class CreateUserDto {
+export class CreateUserDto implements ISignupUserDto {
   @IsNotEmpty()
   username!: string;
 

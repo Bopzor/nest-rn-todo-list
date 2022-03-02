@@ -1,6 +1,7 @@
 import { IsNotEmpty } from 'class-validator';
+import { ILoginUserDto } from 'todo-shared';
 
-export class LogUserDto {
+export class LogUserDto implements ILoginUserDto {
   @IsNotEmpty()
   username!: string;
 
