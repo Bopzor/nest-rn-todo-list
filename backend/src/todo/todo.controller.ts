@@ -13,7 +13,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 
-import { Todo } from '../entities/Todo';
+import { Todo } from './todo.entity';
 import { IsAuth } from '../authentication/guards/is-authenticated.guard';
 import { GetUser } from '../user/get-user.decorator';
 

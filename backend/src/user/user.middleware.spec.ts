@@ -1,7 +1,7 @@
 import { UnauthorizedException } from '@nestjs/common';
 import { Response } from 'express';
 
-import { User } from '../entities/User';
+import { User } from './user.entity';
 import { createUser } from '../tests/factories';
 import { InMemoryUserRepository } from '../tests/in-memory-user.repository';
 import { RequestWithUser } from '../utils/request-with-user';

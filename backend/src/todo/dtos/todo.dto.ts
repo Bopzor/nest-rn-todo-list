@@ -1,6 +1,6 @@
 import { Exclude } from 'class-transformer';
 
-import { Todo } from '../../entities/Todo';
+import { Todo } from '../todo.entity';
 
 export class TodoDto {
   constructor(todo: Todo) {

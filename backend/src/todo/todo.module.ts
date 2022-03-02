@@ -1,4 +1,4 @@
-import { ClassProvider, FactoryProvider, Module } from '@nestjs/common';
+import { FactoryProvider, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
 

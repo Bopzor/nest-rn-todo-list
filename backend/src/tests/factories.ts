@@ -1,5 +1,5 @@
-import { Todo } from '../entities/Todo';
-import { User } from '../entities/User';
+import { Todo } from '../todo/todo.entity';
+import { User } from '../user/user.entity';
 
 export const createUser = (overrides: Partial<User> = {}): User => {
   return new User({

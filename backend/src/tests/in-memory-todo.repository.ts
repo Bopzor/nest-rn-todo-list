@@ -1,4 +1,4 @@
-import { Todo } from '../entities/Todo';
+import { Todo } from '../todo/todo.entity';
 import { TodoRepository } from '../todo/todo.repository';
 
 export class InMemoryTodoRepository implements TodoRepository {

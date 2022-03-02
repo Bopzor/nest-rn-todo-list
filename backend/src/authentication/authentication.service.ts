@@ -1,7 +1,6 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { UserModule } from 'user/user.module';
+import { Injectable } from '@nestjs/common';
 
-import { User } from '../entities/User';
+import { User } from '../user/user.entity';
 import { UserRepository } from '../user/user.repository';
 import { CryptoPort } from '../utils/crypto.port';
 import { GeneratorPort } from '../utils/generator.port';
