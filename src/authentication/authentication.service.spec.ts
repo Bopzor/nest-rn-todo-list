@@ -10,6 +10,7 @@ import { GeneratorModule } from '../utils/generator.module';
 import { AuthenticationService } from './authentication.service';
 import { InvalidCredentialsError } from './errors/invalid-credentials.error';
 import { AuthenticationController } from './authentication.controller';
+import { UsernameAlreadyExistError } from './errors/username-already-exist.error';
 
 describe('AuthenticationService', () => {
   let authenticationService: AuthenticationService;
@@ -41,6 +42,19 @@ describe('AuthenticationService', () => {
       expect(userRepository.users[0]).toMatchObject({
         id: expectedUser.id,
       });
+    });
+
+    it('throws an error if username if already taken', async () => {
+      userRepository.users = [createUser()];
+
+      await expect(() =>
+        authenticationService.createUser({
+          username: 'azot',
+          lastName: 'Toza',
+          firstName: 'Azot',
+          password: 'password',
+        }),
+      ).rejects.toThrow(new UsernameAlreadyExistError('azot'));
     });
   });
 

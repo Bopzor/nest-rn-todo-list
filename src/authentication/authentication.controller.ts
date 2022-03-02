@@ -1,4 +1,15 @@
-import { BadRequestException, Body, Controller, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  ClassSerializerInterceptor,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Req,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 
 import { RequestWithUser } from '../utils/request-with-user';
 
@@ -11,6 +22,7 @@ import { UsernameAlreadyExistError } from './errors/username-already-exist.error
 import { IsNotAuth } from './guards/is-not-authenticated.guard';
 
 @Controller('auth')
+@UseInterceptors(ClassSerializerInterceptor)
 export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
 

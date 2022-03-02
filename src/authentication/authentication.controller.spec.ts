@@ -8,7 +8,6 @@ import { AuthenticationModule } from './authentication.module';
 import { AuthenticationService } from './authentication.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { LogUserDto } from './dtos/log-user.dto';
-import { UserDto } from './dtos/user.dto';
 import { InvalidCredentialsError } from './errors/invalid-credentials.error';
 import { UsernameAlreadyExistError } from './errors/username-already-exist.error';
 
@@ -53,7 +52,12 @@ describe('AuthenticationController', () => {
       await authenticationService.createUser.mockResolvedValueOnce(user);
 
       const response = await agent.post('/auth/signup').send(body);
-      expect(response.body).toMatchObject(new UserDto(user));
+      expect(response.body).toMatchObject({
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        token: user.token,
+      });
 
       expect(authenticationService.createUser).toHaveBeenCalledWith(body);
     });
@@ -97,7 +101,12 @@ describe('AuthenticationController', () => {
       await authenticationService.logUser.mockResolvedValueOnce(user);
 
       const response = await agent.post('/auth/login').send(body).expect(HttpStatus.OK);
-      expect(response.body).toMatchObject(new UserDto(user));
+      expect(response.body).toMatchObject({
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        token: user.token,
+      });
 
       expect(authenticationService.logUser).toHaveBeenCalledWith(body);
     });

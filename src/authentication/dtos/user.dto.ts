@@ -1,20 +1,20 @@
-import { IsNotEmpty } from 'class-validator';
-import { User } from 'entities/User';
+import { Exclude } from 'class-transformer';
+
+import { User } from '../../entities/User';
 
 export class UserDto {
   constructor(user: User) {
     Object.assign(this, user);
   }
 
-  @IsNotEmpty()
   username!: string;
 
-  @IsNotEmpty()
+  @Exclude()
+  hashedPassword!: string;
+
   lastName!: string;
 
-  @IsNotEmpty()
   firstName!: string;
 
-  @IsNotEmpty()
   token!: string;
 }

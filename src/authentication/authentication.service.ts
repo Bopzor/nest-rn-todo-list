@@ -9,6 +9,7 @@ import { GeneratorPort } from '../utils/generator.port';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { LogUserDto } from './dtos/log-user.dto';
 import { InvalidCredentialsError } from './errors/invalid-credentials.error';
+import { UsernameAlreadyExistError } from './errors/username-already-exist.error';
 
 @Injectable()
 export class AuthenticationService {
@@ -19,6 +20,12 @@ export class AuthenticationService {
   ) {}
 
   async createUser(dto: CreateUserDto): Promise<User> {
+    const userAttributes = await this.userRepository.findByUsername(dto.username);
+
+    if (userAttributes) {
+      throw new UsernameAlreadyExistError(userAttributes.username);
+    }
+
     const id = this.generator.generateId();
     const hashedPassword = await this.crypto.hashPassword(dto.password);
 
