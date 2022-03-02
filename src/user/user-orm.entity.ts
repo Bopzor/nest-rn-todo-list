@@ -1,11 +1,16 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, ColumnOptions, Entity, ObjectIdColumn, PrimaryColumn } from 'typeorm';
+
+import { IdColumn } from '../typeorm/id-colum-typeorm.decorator';
 
 @Entity({ name: 'user' })
 export class UserOrmEntity {
-  @PrimaryColumn({ name: '_id' })
+  @PrimaryColumn()
   id!: string;
 
-  @Column()
+  @IdColumn()
+  _id?: string | null;
+
+  @Column({ unique: true })
   username!: string;
 
   @Column()
