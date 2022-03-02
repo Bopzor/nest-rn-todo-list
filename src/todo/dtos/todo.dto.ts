@@ -1,17 +1,18 @@
-import { IsNotEmpty } from 'class-validator';
+import { Exclude } from 'class-transformer';
 
-import { Todo } from 'entities/Todo';
+import { Todo } from '../../entities/Todo';
 
 export class TodoDto {
   constructor(todo: Todo) {
     Object.assign(this, todo);
   }
 
-  @IsNotEmpty()
   title!: string;
 
   description: string | undefined;
 
-  @IsNotEmpty()
   checked!: boolean;
+
+  @Exclude()
+  user_id!: string;
 }

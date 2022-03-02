@@ -9,7 +9,6 @@ import { UserRepository } from '../user/user.repository';
 
 import { TodoModule } from './todo.module';
 import { TodoService } from './todo.service';
-import { TodoDto } from './dtos/todo.dto';
 import { CreateTodoDto } from './dtos/create-todo.dto';
 
 class MockTodoService extends TodoService {
@@ -80,7 +79,12 @@ describe('TodoController', () => {
         .send(body)
         .expect(HttpStatus.CREATED);
 
-      expect(response.body).toMatchObject(new TodoDto(todo));
+      expect(response.body).toMatchObject({
+        id: todo.id,
+        title: todo.title,
+        description: todo.description,
+        checked: todo.checked,
+      });
     });
 
     it('creates a todo with an empty description', async () => {
@@ -126,7 +130,12 @@ describe('TodoController', () => {
         .send(body)
         .expect(HttpStatus.OK);
 
-      expect(response.body).toMatchObject(new TodoDto(todo));
+      expect(response.body).toMatchObject({
+        id: todo.id,
+        title: todo.title,
+        description: todo.description,
+        checked: todo.checked,
+      });
     });
 
     it('throws an error if todo is not one of the user', async () => {
@@ -177,7 +186,12 @@ describe('TodoController', () => {
         .set('Authorization', `Bearer ${user.token}`)
         .expect(HttpStatus.OK);
 
-      expect(response.body).toMatchObject(new TodoDto({ ...todo, checked: !todo.checked }));
+      expect(response.body).toMatchObject({
+        id: todo.id,
+        title: todo.title,
+        description: todo.description,
+        checked: !todo.checked,
+      });
     });
 
     it('throws an error if todo is not one of the user', async () => {

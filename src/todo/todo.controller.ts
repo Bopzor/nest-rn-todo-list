@@ -1,4 +1,17 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  ClassSerializerInterceptor,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 
 import { Todo } from '../entities/Todo';
 import { IsAuth } from '../authentication/guards/is-authenticated.guard';
@@ -10,6 +23,7 @@ import { CreateTodoDto } from './dtos/create-todo.dto';
 import { UpdateTodoDto } from './dtos/update-todo.dto';
 
 @Controller('todos')
+@UseInterceptors(ClassSerializerInterceptor)
 export class TodoController {
   constructor(private readonly todoService: TodoService) {}
 
