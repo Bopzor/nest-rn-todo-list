@@ -27,4 +27,18 @@ export class InMemoryTodoRepository implements TodoRepository {
       ...this.todos.slice(todoIdx + 1)
     ]
   }
+
+  async deleteTodo(todoId: string): Promise<void> {
+    const todoIdx = this.todos.findIndex((t) => t.id === todoId);
+
+    if (todoIdx < 0) {
+      return;
+    }
+
+    // prettier-ignore
+    this.todos = [
+      ...this.todos.slice(0, todoIdx),
+      ...this.todos.slice(todoIdx + 1)
+    ]
+  }
 }

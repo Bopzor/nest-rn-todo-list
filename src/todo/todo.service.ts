@@ -79,4 +79,18 @@ export class TodoService {
       throw error;
     }
   }
+
+  async deleteTodo(userId: string, todoId: string): Promise<void> {
+    const currentTodo = await this.todoRepository.findById(todoId);
+
+    if (!currentTodo) {
+      throw new NotFoundException();
+    }
+
+    if (currentTodo.user_id !== userId) {
+      throw new ForbiddenException();
+    }
+
+    await this.todoRepository.deleteTodo(todoId);
+  }
 }

@@ -17,6 +17,7 @@ class MockTodoService extends TodoService {
   createTodo = jest.fn();
   updateTodo = jest.fn();
   toggleTodo = jest.fn();
+  deleteTodo = jest.fn();
 }
 
 describe('TodoController', () => {
@@ -203,6 +204,21 @@ describe('TodoController', () => {
         .patch(`/todos/${todo.id}/toggle`)
         .set('Authorization', `Bearer ${user.token}`)
         .expect(HttpStatus.NOT_FOUND);
+    });
+  });
+
+  describe('DELETE todos/:id', () => {
+    it('deletes a todo', async () => {
+      const user = createUser({ token: 'token' });
+      userRepository.users = [user];
+      const todo = createTodo({ user_id: user.id, id: 'id-1' });
+
+      await todoService.deleteTodo.mockResolvedValueOnce(undefined);
+
+      await agent
+        .delete(`/todos/${todo.id}`)
+        .set('Authorization', `Bearer ${user.token}`)
+        .expect(HttpStatus.NO_CONTENT);
     });
   });
 });

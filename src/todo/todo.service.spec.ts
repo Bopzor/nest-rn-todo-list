@@ -167,4 +167,34 @@ describe('TodoService', () => {
       await expect(() => todoService.updateTodo(user.id, todo.id, dto)).rejects.toThrow(new ForbiddenException());
     });
   });
+
+  describe('deleteTodo', () => {
+    it('deletes a todo if it match user id', async () => {
+      const user = createUser();
+      const todo = createTodo({ user_id: user.id });
+      todoRepository.todos = [todo];
+
+      await todoService.deleteTodo(user.id, todo.id);
+
+      expect(todoRepository.todos).toHaveLength(0);
+    });
+
+    it('throws a NOT FOUND error if no todo is found', async () => {
+      const user = createUser();
+
+      await expect(() => todoService.deleteTodo(user.id, 'todo-id')).rejects.toThrow(new NotFoundException());
+    });
+
+    it('throws a FORBIDDEN error if the todo is not associated to the user', async () => {
+      const user = createUser();
+      const todo = createTodo();
+      todoRepository.todos = [todo];
+      const dto: UpdateTodoDto = {
+        title: 'edited title',
+        description: 'edited description',
+      };
+
+      await expect(() => todoService.deleteTodo(user.id, todo.id)).rejects.toThrow(new ForbiddenException());
+    });
+  });
 });

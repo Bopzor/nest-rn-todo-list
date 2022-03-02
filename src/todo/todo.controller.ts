@@ -1,7 +1,6 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, UseGuards } from '@nestjs/common';
 
 import { Todo } from '../entities/Todo';
-import { User } from '../entities/User';
 import { IsAuth } from '../authentication/guards/is-authenticated.guard';
 import { GetUser } from '../user/get-user.decorator';
 
@@ -63,6 +62,17 @@ export class TodoController {
       const todo = await this.todoService.toggleTodo(userId, todoId);
 
       return new TodoDto(todo);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @UseGuards(IsAuth)
+  @Delete('/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteTodo(@GetUser('id') userId: string, @Param('id') todoId: string): Promise<void> {
+    try {
+      await this.todoService.deleteTodo(userId, todoId);
     } catch (error) {
       throw error;
     }
