@@ -3,11 +3,11 @@ import { ClassProvider, Module } from '@nestjs/common';
 import { StubGeneratorAdapter } from '../tests/stub-generator.adapter';
 
 import { GeneratorPort } from './generator.port';
-import { UUIDGeneratorAdapter } from './uuid-generator.adapter';
+import { GeneratorAdapter } from './generator.adapter';
 
 const generatorProvider: ClassProvider<GeneratorPort> = {
   provide: GeneratorPort,
-  useClass: process.env.NODE_ENV !== 'test' ? UUIDGeneratorAdapter : StubGeneratorAdapter,
+  useClass: process.env.NODE_ENV !== 'test' ? GeneratorAdapter : StubGeneratorAdapter,
 };
 
 @Module({

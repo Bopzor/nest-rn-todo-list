@@ -34,7 +34,7 @@ export class AuthenticationService {
       lastName: dto.lastName,
       firstName: dto.firstName,
       hashedPassword,
-      token: this.generator.generateToken(),
+      token: this.generator.generateToken({ username: dto.username, userId: id }),
     });
 
     await this.userRepository.save(user);
@@ -55,7 +55,10 @@ export class AuthenticationService {
       throw new InvalidCredentialsError();
     }
 
-    const user = new User({ ...userAttributes, token: this.generator.generateToken() });
+    const user = new User({
+      ...userAttributes,
+      token: this.generator.generateToken({ username: userAttributes.username, userId: userAttributes.id }),
+    });
 
     await this.userRepository.save(user);
 

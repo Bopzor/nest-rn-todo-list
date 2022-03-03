@@ -5,7 +5,7 @@ export class StubGeneratorAdapter implements GeneratorPort {
     return 'id';
   }
 
-  generateToken(): string {
+  generateToken(_payload: { username: string; userId: string }): string {
     return 'token';
   }
 }
