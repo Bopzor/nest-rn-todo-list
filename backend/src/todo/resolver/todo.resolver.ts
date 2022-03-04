@@ -53,4 +53,16 @@ export class TodoResolver {
       throw error;
     }
   }
+
+  @UseGuards(GqlIsAuth)
+  @Mutation((returns) => TodoDto)
+  async toggleTodo(@Args('id') todoId: string, @GqlGetUser('id') userId: string): Promise<TodoDto> {
+    try {
+      const todo = await this.todoService.toggleTodo(userId, todoId);
+
+      return new TodoDto(todo);
+    } catch (error) {
+      throw error;
+    }
+  }
 }

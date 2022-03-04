@@ -23,6 +23,7 @@ type Mutation {
   createTodo(todo: CreateTodoDto!): TodoDto!
   login(user: LogUserDto!): UserDto!
   signup(user: CreateUserDto!): UserDto!
+  toggleTodo(id: String!): TodoDto!
   updateTodo(id: String!, todo: UpdateTodoDto!): TodoDto!
 }
 

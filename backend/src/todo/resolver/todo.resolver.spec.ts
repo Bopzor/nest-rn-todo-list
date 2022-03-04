@@ -317,4 +317,102 @@ describe('TodoResolver', () => {
       expect(response.errors?.[0]).toHaveProperty('message', 'Not Found');
     });
   });
+
+  describe('toggleTodo', () => {
+    it('toggles a todo', async () => {
+      const user = createUser({ token: 'token' });
+      userRepository.users = [user];
+      const todo = createTodo({ user_id: user.id, id: 'id-1' });
+
+      await todoService.toggleTodo.mockResolvedValueOnce({ ...todo, checked: !todo.checked });
+
+      const response = await apolloClient.mutate({
+        integrationContextArgument: {
+          req: {
+            user,
+          },
+        },
+        mutation: gql`
+          mutation toggleTodo($id: String!) {
+            toggleTodo(id: $id) {
+              id
+              title
+              description
+              checked
+            }
+          }
+        `,
+        variables: {
+          id: todo.id,
+        },
+      });
+
+      expect(response.data.toggleTodo).toMatchObject({
+        id: todo.id,
+        title: todo.title,
+        description: todo.description,
+        checked: !todo.checked,
+      });
+    });
+
+    it('returns an error if todo is not one of the user', async () => {
+      const user = createUser({ token: 'token' });
+      userRepository.users = [user];
+
+      await todoService.toggleTodo.mockRejectedValueOnce(new ForbiddenException());
+
+      const response = await apolloClient.mutate({
+        integrationContextArgument: {
+          req: {
+            user,
+          },
+        },
+        mutation: gql`
+          mutation toggleTodo($id: String!) {
+            toggleTodo(id: $id) {
+              id
+              title
+              description
+              checked
+            }
+          }
+        `,
+        variables: {
+          id: 'not-my-todo',
+        },
+      });
+
+      expect(response.errors?.[0]).toHaveProperty('message', 'Forbidden');
+    });
+
+    it('returns an error if todo does not exist', async () => {
+      const user = createUser({ token: 'token' });
+      userRepository.users = [user];
+
+      await todoService.toggleTodo.mockRejectedValueOnce(new NotFoundException());
+
+      const response = await apolloClient.mutate({
+        integrationContextArgument: {
+          req: {
+            user,
+          },
+        },
+        mutation: gql`
+          mutation ToggleTodo($id: String!) {
+            toggleTodo(id: $id) {
+              id
+              title
+              description
+              checked
+            }
+          }
+        `,
+        variables: {
+          id: 'not-found-todo',
+        },
+      });
+
+      expect(response.errors?.[0]).toHaveProperty('message', 'Not Found');
+    });
+  });
 });
