@@ -1,4 +1,4 @@
-import { Column, ColumnOptions, Entity, ObjectIdColumn, PrimaryColumn } from 'typeorm';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 import { IdColumn } from '../typeorm/id-colum-typeorm.decorator';
 

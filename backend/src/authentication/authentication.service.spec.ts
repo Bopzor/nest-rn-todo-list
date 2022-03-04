@@ -9,7 +9,7 @@ import { GeneratorModule } from '../utils/generator.module';
 
 import { AuthenticationService } from './authentication.service';
 import { InvalidCredentialsError } from './errors/invalid-credentials.error';
-import { AuthenticationController } from './authentication.controller';
+import { AuthenticationController } from './http/authentication.controller';
 import { UsernameAlreadyExistError } from './errors/username-already-exist.error';
 
 describe('AuthenticationService', () => {

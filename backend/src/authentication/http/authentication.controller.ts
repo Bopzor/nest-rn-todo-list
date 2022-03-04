@@ -11,15 +11,15 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 
-import { RequestWithUser } from '../utils/request-with-user';
+import { RequestWithUser } from '../../utils/request-with-user';
 
-import { AuthenticationService } from './authentication.service';
-import { CreateUserDto } from './dtos/create-user.dto';
-import { LogUserDto } from './dtos/log-user.dto';
-import { UserDto } from './dtos/user.dto';
-import { InvalidCredentialsError } from './errors/invalid-credentials.error';
-import { UsernameAlreadyExistError } from './errors/username-already-exist.error';
-import { IsNotAuth } from './guards/is-not-authenticated.guard';
+import { AuthenticationService } from '../authentication.service';
+import { CreateUserDto } from '../dtos/create-user.dto';
+import { LogUserDto } from '../dtos/log-user.dto';
+import { UserDto } from '../dtos/user.dto';
+import { InvalidCredentialsError } from '../errors/invalid-credentials.error';
+import { UsernameAlreadyExistError } from '../errors/username-already-exist.error';
+import { IsNotAuth } from '../guards/is-not-authenticated.guard';
 
 @Controller('auth')
 @UseInterceptors(ClassSerializerInterceptor)

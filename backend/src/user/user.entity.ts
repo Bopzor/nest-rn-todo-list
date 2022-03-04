@@ -1,3 +1,5 @@
+import { Field, ObjectType } from '@nestjs/graphql';
+
 type UserAttributes = {
   id: string;
   username: string;
@@ -7,12 +9,23 @@ type UserAttributes = {
   token?: string;
 };
 
+@ObjectType()
 export class User {
+  @Field()
   readonly id: string;
+
+  @Field()
   readonly username: string;
+
   readonly hashedPassword: string;
+
+  @Field()
   readonly lastName: string;
+
+  @Field()
   readonly firstName: string;
+
+  @Field((type) => String, { nullable: true })
   readonly token?: string;
 
   constructor(attributes: UserAttributes) {
