@@ -65,4 +65,16 @@ export class TodoResolver {
       throw error;
     }
   }
+
+  @UseGuards(GqlIsAuth)
+  @Mutation((returns) => String)
+  async deleteTodo(@Args('id') todoId: string, @GqlGetUser('id') userId: string): Promise<String> {
+    try {
+      await this.todoService.deleteTodo(userId, todoId);
+
+      return todoId;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

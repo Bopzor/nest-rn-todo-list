@@ -415,4 +415,32 @@ describe('TodoResolver', () => {
       expect(response.errors?.[0]).toHaveProperty('message', 'Not Found');
     });
   });
+
+  describe('deleteTodo', () => {
+    it('deletes a todo', async () => {
+      const user = createUser({ token: 'token' });
+      userRepository.users = [user];
+      const todo = createTodo({ user_id: user.id, id: 'id-1' });
+
+      await todoService.deleteTodo.mockResolvedValueOnce(undefined);
+
+      const response = await apolloClient.mutate({
+        integrationContextArgument: {
+          req: {
+            user,
+          },
+        },
+        mutation: gql`
+          mutation DeleteTodo($id: String!) {
+            deleteTodo(id: $id)
+          }
+        `,
+        variables: {
+          id: todo.id,
+        },
+      });
+
+      expect(response.data.deleteTodo).toBe(todo.id);
+    });
+  });
 });

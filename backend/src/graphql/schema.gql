@@ -21,6 +21,7 @@ input LogUserDto {
 
 type Mutation {
   createTodo(todo: CreateTodoDto!): TodoDto!
+  deleteTodo(id: String!): String!
   login(user: LogUserDto!): UserDto!
   signup(user: CreateUserDto!): UserDto!
   toggleTodo(id: String!): TodoDto!
