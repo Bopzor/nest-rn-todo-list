@@ -2,14 +2,14 @@ import { ForbiddenException, HttpStatus, INestApplication, NotFoundException, Va
 import { Test } from '@nestjs/testing';
 import request, { SuperAgentTest } from 'supertest';
 
-import { AuthorizationModule } from '../authorization/authorization.module';
-import { InMemoryUserRepository } from '../tests/in-memory-user.repository';
-import { createTodo, createUser } from '../tests/factories';
-import { UserRepository } from '../user/user.repository';
+import { AuthorizationModule } from 'src/authorization/authorization.module';
+import { InMemoryUserRepository } from 'src/tests/in-memory-user.repository';
+import { createTodo, createUser } from 'src/tests/factories';
+import { UserRepository } from 'src/user/repositories/user.repository';
 
-import { TodoModule } from './todo.module';
-import { TodoService } from './todo.service';
-import { CreateTodoDto } from './dtos/create-todo.dto';
+import { TodoModule } from '../todo.module';
+import { CreateTodoDto } from '../dtos/create-todo.dto';
+import { TodoService } from '../service/todo.service';
 
 class MockTodoService extends TodoService {
   getAllForUser = jest.fn();

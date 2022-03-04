@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Connection, Repository } from 'typeorm';
 
-import { Todo } from './todo.entity';
-import { TodoOrmEntity } from './todo-orm.entity';
+import { Todo } from '../entities/todo.entity';
+import { TodoOrmEntity } from '../entities/todo-orm.entity';
 
 import { TodoRepository } from './todo.repository';
 

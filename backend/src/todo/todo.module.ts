@@ -2,14 +2,14 @@ import { FactoryProvider, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
 
-import { InMemoryTodoRepository } from '../tests/in-memory-todo.repository';
-import { GeneratorModule } from '../utils/generator.module';
-import { TodoOrmEntity } from './todo-orm.entity';
-import { TodoTypeOrmRepository } from './todo-typeorm.repository';
+import { InMemoryTodoRepository } from 'src/tests/in-memory-todo.repository';
+import { GeneratorModule } from 'src/utils/generator.module';
 
-import { TodoController } from './todo.controller';
-import { TodoRepository } from './todo.repository';
-import { TodoService } from './todo.service';
+import { TodoController } from './controller/todo.controller';
+import { TodoOrmEntity } from './entities/todo-orm.entity';
+import { TodoTypeOrmRepository } from './repositories/todo-typeorm.repository';
+import { TodoRepository } from './repositories/todo.repository';
+import { TodoService } from './service/todo.service';
 
 // TODO: find a more "nest way"
 const inject = [];

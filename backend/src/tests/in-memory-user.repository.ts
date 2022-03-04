@@ -1,5 +1,5 @@
-import { User } from '../user/user.entity';
-import { UserRepository } from '../user/user.repository';
+import { User } from 'src/user/entities/user.entity';
+import { UserRepository } from 'src/user/repositories/user.repository';
 
 export class InMemoryUserRepository implements UserRepository {
   users: User[] = [];

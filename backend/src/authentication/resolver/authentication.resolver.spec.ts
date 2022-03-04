@@ -3,14 +3,15 @@ import { Test } from '@nestjs/testing';
 import { gql } from 'apollo-server-express';
 import { ApolloServerTestClient } from 'apollo-server-testing';
 
-import { AuthenticationModule } from '../../authentication/authentication.module';
-import { AuthenticationService } from '../../authentication/authentication.service';
-import { UsernameAlreadyExistError } from '../../authentication/errors/username-already-exist.error';
-import { createUser } from '../../tests/factories';
-import { createApolloTestClient } from '../../tests/create-apollo-test-client.ts';
-import { ResolverForTest } from '../../tests/test-query.revolver';
-import { GraphqlModule } from '../../graphql/graphql.module';
-import { InvalidCredentialsError } from '../../authentication/errors/invalid-credentials.error';
+import { createUser } from 'src/tests/factories';
+import { createApolloTestClient } from 'src/tests/create-apollo-test-client.ts';
+import { ResolverForTest } from 'src/tests/test-query.revolver';
+import { GraphqlModule } from 'src/graphql/graphql.module';
+
+import { AuthenticationModule } from '../authentication.module';
+import { UsernameAlreadyExistError } from '../errors/username-already-exist.error';
+import { InvalidCredentialsError } from '../errors/invalid-credentials.error';
+import { AuthenticationService } from '../service/authentication.service';
 
 class MockAuthenticationService extends AuthenticationService {
   createUser = jest.fn();

@@ -1,11 +1,11 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 
-import { GeneratorPort } from '../utils/generator.port';
-import { Todo } from './todo.entity';
+import { GeneratorPort } from 'src/utils/generator.port';
+import { Todo } from '../entities/todo.entity';
 
-import { CreateTodoDto } from './dtos/create-todo.dto';
-import { TodoRepository } from './todo.repository';
-import { UpdateTodoDto } from './dtos/update-todo.dto';
+import { CreateTodoDto } from '../dtos/create-todo.dto';
+import { TodoRepository } from '../repositories/todo.repository';
+import { UpdateTodoDto } from '../dtos/update-todo.dto';
 
 @Injectable()
 export class TodoService {

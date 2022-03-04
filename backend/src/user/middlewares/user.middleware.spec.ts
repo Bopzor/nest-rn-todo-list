@@ -1,10 +1,11 @@
 import { UnauthorizedException } from '@nestjs/common';
 import { Response } from 'express';
 
-import { User } from './user.entity';
-import { createUser } from '../tests/factories';
-import { InMemoryUserRepository } from '../tests/in-memory-user.repository';
-import { RequestWithUser } from '../utils/request-with-user';
+import { createUser } from 'src/tests/factories';
+import { InMemoryUserRepository } from 'src/tests/in-memory-user.repository';
+import { RequestWithUser } from 'src/utils/request-with-user';
+
+import { User } from '../entities/user.entity';
 
 import { UserMiddleware } from './user.middleware';
 

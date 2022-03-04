@@ -1,7 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 
-import { UserMiddleware } from '../user/user.middleware';
-import { UserModule } from '../user/user.module';
+import { UserMiddleware } from 'src/user/middlewares/user.middleware';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [UserModule],

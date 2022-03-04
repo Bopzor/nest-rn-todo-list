@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Connection, Repository } from 'typeorm';
 
-import { User } from './user.entity';
-import { UserOrmEntity } from './user-orm.entity';
+import { User } from '../entities/user.entity';
+import { UserOrmEntity } from '../entities/user-orm.entity';
 
 import { UserRepository } from './user.repository';
 

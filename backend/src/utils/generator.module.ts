@@ -1,6 +1,6 @@
 import { ClassProvider, Module } from '@nestjs/common';
 
-import { StubGeneratorAdapter } from '../tests/stub-generator.adapter';
+import { StubGeneratorAdapter } from 'src/tests/stub-generator.adapter';
 
 import { GeneratorPort } from './generator.port';
 import { GeneratorAdapter } from './generator.adapter';

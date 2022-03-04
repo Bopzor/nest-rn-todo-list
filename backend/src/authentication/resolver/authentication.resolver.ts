@@ -1,13 +1,14 @@
 import { BadRequestException } from '@nestjs/common';
 import { Args, Context, Mutation, Resolver } from '@nestjs/graphql';
 
-import { UsernameAlreadyExistError } from '../../authentication/errors/username-already-exist.error';
-import { AuthenticationService } from '../../authentication/authentication.service';
-import { CreateUserDto } from '../../authentication/dtos/create-user.dto';
-import { UserDto } from '../../authentication/dtos/user.dto';
-import { User } from '../../user/user.entity';
-import { LogUserDto } from '../../authentication/dtos/log-user.dto';
-import { InvalidCredentialsError } from '../../authentication/errors/invalid-credentials.error';
+import { User } from 'src/user/entities/user.entity';
+
+import { CreateUserDto } from '../dtos/create-user.dto';
+import { LogUserDto } from '../dtos/log-user.dto';
+import { UserDto } from '../dtos/user.dto';
+import { InvalidCredentialsError } from '../errors/invalid-credentials.error';
+import { UsernameAlreadyExistError } from '../errors/username-already-exist.error';
+import { AuthenticationService } from '../service/authentication.service';
 
 @Resolver(() => User)
 export class AuthenticationResolver {

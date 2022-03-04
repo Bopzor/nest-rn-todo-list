@@ -10,9 +10,14 @@
     "target": "es2017",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./src",
     "incremental": true,
     "skipLibCheck": true,
-    "strict": true
+    "strict": true,
+    "baseUrl": "./src",
+    "paths": {
+      "src/*": [
+        "./*",
+      ],
+    },
   }
 }

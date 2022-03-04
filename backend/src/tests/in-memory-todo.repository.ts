@@ -1,5 +1,5 @@
-import { Todo } from '../todo/todo.entity';
-import { TodoRepository } from '../todo/todo.repository';
+import { Todo } from 'src/todo/entities/todo.entity';
+import { TodoRepository } from 'src/todo/repositories/todo.repository';
 
 export class InMemoryTodoRepository implements TodoRepository {
   todos: Todo[] = [];

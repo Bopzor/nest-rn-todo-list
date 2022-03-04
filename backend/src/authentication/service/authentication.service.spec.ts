@@ -1,16 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { createUser } from '../tests/factories';
-import { InMemoryUserRepository } from '../tests/in-memory-user.repository';
-import { UserRepository } from '../user/user.repository';
-import { UserModule } from '../user/user.module';
-import { CryptoModule } from '../utils/crypto.module';
-import { GeneratorModule } from '../utils/generator.module';
+import { createUser } from 'src/tests/factories';
+import { InMemoryUserRepository } from 'src/tests/in-memory-user.repository';
+import { UserRepository } from 'src/user/repositories/user.repository';
+import { UserModule } from 'src/user/user.module';
+import { CryptoModule } from 'src/utils/crypto.module';
+import { GeneratorModule } from 'src/utils/generator.module';
 
 import { AuthenticationService } from './authentication.service';
-import { InvalidCredentialsError } from './errors/invalid-credentials.error';
-import { AuthenticationController } from './http/authentication.controller';
-import { UsernameAlreadyExistError } from './errors/username-already-exist.error';
+import { InvalidCredentialsError } from '../errors/invalid-credentials.error';
+import { AuthenticationController } from '../controller/authentication.controller';
+import { UsernameAlreadyExistError } from '../errors/username-already-exist.error';
 
 describe('AuthenticationService', () => {
   let authenticationService: AuthenticationService;

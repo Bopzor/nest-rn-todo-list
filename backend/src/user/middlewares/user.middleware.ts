@@ -1,9 +1,9 @@
 import { Injectable, NestMiddleware, UnauthorizedException } from '@nestjs/common';
 import { Response, NextFunction } from 'express';
 
-import { RequestWithUser } from '../utils/request-with-user';
+import { RequestWithUser } from 'src/utils/request-with-user';
 
-import { UserRepository } from './user.repository';
+import { UserRepository } from '../repositories/user.repository';
 
 @Injectable()
 export class UserMiddleware implements NestMiddleware {

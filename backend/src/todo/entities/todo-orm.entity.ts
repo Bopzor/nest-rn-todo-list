@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
-import { IdColumn } from '../typeorm/id-colum-typeorm.decorator';
+import { IdColumn } from 'src/typeorm/id-colum-typeorm.decorator';
 
 @Entity({ name: 'todo' })
 export class TodoOrmEntity {

@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 
-import { User } from '../user/user.entity';
-import { UserRepository } from '../user/user.repository';
-import { CryptoPort } from '../utils/crypto.port';
-import { GeneratorPort } from '../utils/generator.port';
+import { User } from 'src/user/entities/user.entity';
+import { UserRepository } from 'src/user/repositories/user.repository';
+import { CryptoPort } from 'src/utils/crypto.port';
+import { GeneratorPort } from 'src/utils/generator.port';
 
-import { CreateUserDto } from './dtos/create-user.dto';
-import { LogUserDto } from './dtos/log-user.dto';
-import { InvalidCredentialsError } from './errors/invalid-credentials.error';
-import { UsernameAlreadyExistError } from './errors/username-already-exist.error';
+import { CreateUserDto } from '../dtos/create-user.dto';
+import { LogUserDto } from '../dtos/log-user.dto';
+import { InvalidCredentialsError } from '../errors/invalid-credentials.error';
+import { UsernameAlreadyExistError } from '../errors/username-already-exist.error';
 
 @Injectable()
 export class AuthenticationService {

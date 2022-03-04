@@ -13,14 +13,14 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 
-import { Todo } from './todo.entity';
-import { IsAuth } from '../authentication/guards/is-authenticated.guard';
-import { GetUser } from '../user/get-user.decorator';
+import { IsAuth } from 'src/authentication/guards/is-authenticated.guard';
+import { GetUser } from 'src/user/get-user.decorator';
 
-import { TodoDto } from './dtos/todo.dto';
-import { TodoService } from './todo.service';
-import { CreateTodoDto } from './dtos/create-todo.dto';
-import { UpdateTodoDto } from './dtos/update-todo.dto';
+import { Todo } from '../entities/todo.entity';
+import { CreateTodoDto } from '../dtos/create-todo.dto';
+import { TodoDto } from '../dtos/todo.dto';
+import { UpdateTodoDto } from '../dtos/update-todo.dto';
+import { TodoService } from '../service/todo.service';
 
 @Controller('todos')
 @UseInterceptors(ClassSerializerInterceptor)

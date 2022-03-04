@@ -1,16 +1,17 @@
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 
-import { InMemoryTodoRepository } from '../tests/in-memory-todo.repository';
-import { createTodo, createUser } from '../tests/factories';
-import { GeneratorModule } from '../utils/generator.module';
+import { InMemoryTodoRepository } from 'src/tests/in-memory-todo.repository';
+import { createTodo, createUser } from 'src/tests/factories';
+import { GeneratorModule } from 'src/utils/generator.module';
 
-import { TodoController } from './todo.controller';
-import { todoRepositoryProvider } from './todo.module';
-import { TodoRepository } from './todo.repository';
+import { todoRepositoryProvider } from '../todo.module';
+import { TodoController } from '../controller/todo.controller';
+import { CreateTodoDto } from '../dtos/create-todo.dto';
+import { UpdateTodoDto } from '../dtos/update-todo.dto';
+import { TodoRepository } from '../repositories/todo.repository';
+
 import { TodoService } from './todo.service';
-import { CreateTodoDto } from './dtos/create-todo.dto';
-import { UpdateTodoDto } from './dtos/update-todo.dto';
 
 describe('TodoService', () => {
   let todoService: TodoService;

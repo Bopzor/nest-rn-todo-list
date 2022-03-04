@@ -2,11 +2,11 @@ import { FactoryProvider, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
 
-import { InMemoryUserRepository } from '../tests/in-memory-user.repository';
-import { UserOrmEntity } from './user-orm.entity';
+import { InMemoryUserRepository } from 'src/tests/in-memory-user.repository';
 
-import { UserTypeOrmRepository } from './user-typeorm.repository';
-import { UserRepository } from './user.repository';
+import { UserOrmEntity } from './entities/user-orm.entity';
+import { UserTypeOrmRepository } from './repositories/user-typeorm.repository';
+import { UserRepository } from './repositories/user.repository';
 
 // TODO: find a more "nest way"
 const inject = [];

@@ -1,4 +1,4 @@
-import { Todo } from './todo.entity';
+import { Todo } from '../entities/todo.entity';
 
 export abstract class TodoRepository {
   abstract findAllForUser(userId: string): Promise<Todo[]>;

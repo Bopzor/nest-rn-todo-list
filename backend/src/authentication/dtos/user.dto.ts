@@ -2,7 +2,7 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { Exclude } from 'class-transformer';
 import { IUserDto } from 'todo-shared';
 
-import { User } from '../../user/user.entity';
+import { User } from 'src/user/entities/user.entity';
 
 @ObjectType()
 export class UserDto implements IUserDto {
