@@ -12,6 +12,7 @@ import { TestGraphqlModule } from 'src/tests/graphql/graphql.module';
 
 import { TodoService } from '../service/todo.service';
 import { TodoModule } from '../todo.module';
+import { CreateTodoDto } from '../dtos/create-todo.dto';
 
 class MockTodoService extends TodoService {
   getAllForUser = jest.fn();
@@ -90,16 +91,123 @@ describe('TodoResolver', () => {
     });
   });
 
-            title
-            description
-            checked
+  describe('createTodo', () => {
+    it('creates a todo', async () => {
+      const user = createUser({ token: 'token' });
+      userRepository.users = [user];
+      const body: CreateTodoDto = {
+        title: 'title',
+        description: 'description',
+      };
+      const todo = createTodo({ ...body, user_id: user.id });
+
+      await todoService.createTodo.mockResolvedValueOnce(todo);
+
+      const response = await apolloClient.mutate({
+        integrationContextArgument: {
+          req: {
+            user: createUser(),
+          },
+        },
+        mutation: gql`
+          mutation CreateTodo($todo: CreateTodoDto!) {
+            createTodo(todo: $todo) {
+              id
+              title
+              description
+              checked
+            }
           }
         `,
+        variables: {
+          todo: {
+            title: 'title',
+            description: 'description',
+          },
+        },
       });
 
-      console.log(response);
+      expect(response.data.createTodo).toMatchObject({
+        id: todo.id,
+        title: todo.title,
+        description: todo.description,
+        checked: todo.checked,
+      });
+    });
 
-      expect(response.data.getAllTodos.toMatchObject([]));
+    it('creates a todo with an empty description', async () => {
+      const user = createUser({ token: 'token' });
+      userRepository.users = [user];
+      const body: CreateTodoDto = {
+        title: 'title',
+      };
+      const todo = createTodo({ ...body, description: undefined, user_id: user.id });
+
+      await todoService.createTodo.mockResolvedValueOnce(todo);
+
+      const response = await apolloClient.mutate({
+        integrationContextArgument: {
+          req: {
+            user: createUser(),
+          },
+        },
+        mutation: gql`
+          mutation CreateTodo($todo: CreateTodoDto!) {
+            createTodo(todo: $todo) {
+              id
+              title
+              description
+              checked
+            }
+          }
+        `,
+        variables: {
+          todo: {
+            title: 'title',
+          },
+        },
+      });
+
+      expect(response.data.createTodo).toMatchObject({
+        id: todo.id,
+        title: todo.title,
+        description: null,
+        checked: todo.checked,
+      });
+    });
+
+    it('returns an error if no title is given', async () => {
+      const user = createUser({ token: 'token' });
+      userRepository.users = [user];
+      const body: CreateTodoDto = {
+        title: '',
+        description: 'description',
+      };
+
+      const response = await apolloClient.mutate({
+        integrationContextArgument: {
+          req: {
+            user: createUser(),
+          },
+        },
+        mutation: gql`
+          mutation CreateTodo($todo: CreateTodoDto!) {
+            createTodo(todo: $todo) {
+              id
+              title
+              description
+              checked
+            }
+          }
+        `,
+        variables: {
+          todo: {
+            description: 'description',
+          },
+        },
+      });
+
+      expect(response.errors).toHaveLength(1);
     });
   });
 });
