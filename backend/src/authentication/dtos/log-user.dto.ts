@@ -1,8 +1,8 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, InputType } from '@nestjs/graphql';
 import { IsNotEmpty } from 'class-validator';
 import { ILoginUserDto } from 'todo-shared';
 
-@ObjectType()
+@InputType()
 export class LogUserDto implements ILoginUserDto {
   @Field()
   @IsNotEmpty()

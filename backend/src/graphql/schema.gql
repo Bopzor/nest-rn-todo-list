@@ -9,7 +9,13 @@ input CreateUserDto {
   username: String!
 }
 
+input LogUserDto {
+  password: String!
+  username: String!
+}
+
 type Mutation {
+  login(user: LogUserDto!): UserDto!
   signup(user: CreateUserDto!): UserDto!
 }
 

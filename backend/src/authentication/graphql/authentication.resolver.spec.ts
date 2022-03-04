@@ -10,6 +10,7 @@ import { createUser } from '../../tests/factories';
 import { createApolloTestClient } from '../../tests/create-apollo-test-client.ts';
 import { ResolverForTest } from '../../tests/test-query.revolver';
 import { GraphqlModule } from '../../graphql/graphql.module';
+import { InvalidCredentialsError } from '../../authentication/errors/invalid-credentials.error';
 
 class MockAuthenticationService extends AuthenticationService {
   createUser = jest.fn();
@@ -99,6 +100,65 @@ describe('AuthenticationResolver', () => {
       });
 
       expect(response?.errors?.[0]).toHaveProperty('message', 'Username azot is already taken');
+    });
+  });
+
+  describe('login', () => {
+    it('logs in the existing user', async () => {
+      const user = createUser({ token: 'token' });
+
+      await authenticationService.logUser.mockResolvedValueOnce(user);
+
+      const response = await apolloClient.mutate({
+        mutation: gql`
+          mutation Login($user: LogUserDto!) {
+            login(user: $user) {
+              username
+              firstName
+              lastName
+              token
+            }
+          }
+        `,
+        variables: {
+          user: {
+            username: 'azot',
+            password: 'p4ssWord',
+          },
+        },
+      });
+
+      expect(response.data.login).toMatchObject({
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        token: user.token,
+      });
+    });
+
+    it('throws an error if credentials are not valid', async () => {
+      await authenticationService.logUser.mockRejectedValueOnce(new InvalidCredentialsError());
+
+      const response = await apolloClient.mutate({
+        mutation: gql`
+          mutation Login($user: LogUserDto!) {
+            login(user: $user) {
+              username
+              firstName
+              lastName
+              token
+            }
+          }
+        `,
+        variables: {
+          user: {
+            username: 'toto',
+            password: 'p4ssWord',
+          },
+        },
+      });
+
+      expect(response?.errors?.[0]).toHaveProperty('message', 'Given credentials are not valid');
     });
   });
 });
