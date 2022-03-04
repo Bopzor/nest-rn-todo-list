@@ -10,6 +10,7 @@ import { TodoOrmEntity } from './entities/todo-orm.entity';
 import { TodoTypeOrmRepository } from './repositories/todo-typeorm.repository';
 import { TodoRepository } from './repositories/todo.repository';
 import { TodoService } from './service/todo.service';
+import { TodoResolver } from './resolver/todo.resolver';
 
 // TODO: find a more "nest way"
 const inject = [];
@@ -35,6 +36,6 @@ export const todoRepositoryProvider: FactoryProvider<TodoRepository> = {
 @Module({
   imports: [GeneratorModule],
   controllers: [TodoController],
-  providers: [TodoService, todoRepositoryProvider],
+  providers: [TodoService, TodoResolver, todoRepositoryProvider],
 })
 export class TodoModule {}

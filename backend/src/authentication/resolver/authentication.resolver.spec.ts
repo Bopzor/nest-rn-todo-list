@@ -1,12 +1,11 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { gql } from 'apollo-server-express';
-import { ApolloServerTestClient } from 'apollo-server-testing';
 
 import { createUser } from 'src/tests/factories';
-import { createApolloTestClient } from 'src/tests/create-apollo-test-client.ts';
+import { ApolloServerTestClient, createApolloTestClient } from 'src/tests/create-apollo-test-client.ts';
 import { ResolverForTest } from 'src/tests/test-query.revolver';
-import { GraphqlModule } from 'src/graphql/graphql.module';
+import { TestGraphqlModule } from 'src/tests/graphql/graphql.module';
 
 import { AuthenticationModule } from '../authentication.module';
 import { UsernameAlreadyExistError } from '../errors/username-already-exist.error';
@@ -25,7 +24,7 @@ describe('AuthenticationResolver', () => {
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
-      imports: [AuthenticationModule, GraphqlModule],
+      imports: [AuthenticationModule, TestGraphqlModule],
       providers: [ResolverForTest],
     })
       .overrideProvider(AuthenticationService)

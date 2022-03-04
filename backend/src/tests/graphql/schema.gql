@@ -7,25 +7,12 @@ input CreateTodoDto {
   title: String!
 }
 
-input CreateUserDto {
-  firstName: String!
-  lastName: String!
-  password: String!
-  username: String!
-}
-
-input LogUserDto {
-  password: String!
-  username: String!
-}
-
 type Mutation {
   createTodo(todo: CreateTodoDto!): TodoDto!
-  login(user: LogUserDto!): UserDto!
-  signup(user: CreateUserDto!): UserDto!
 }
 
 type Query {
+  sayHello: String!
   todos: [TodoDto!]!
 }
 
@@ -34,12 +21,4 @@ type TodoDto {
   description: String
   id: String!
   title: String!
-}
-
-type UserDto {
-  firstName: String!
-  id: String!
-  lastName: String!
-  token: String!
-  username: String!
 }
