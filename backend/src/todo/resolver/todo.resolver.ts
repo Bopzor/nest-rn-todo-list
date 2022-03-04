@@ -6,6 +6,7 @@ import { GqlGetUser } from 'src/user/get-user.decorator';
 import { CreateTodoDto } from '../dtos/create-todo.dto';
 
 import { TodoDto } from '../dtos/todo.dto';
+import { UpdateTodoDto } from '../dtos/update-todo.dto';
 import { Todo } from '../entities/todo.entity';
 import { TodoService } from '../service/todo.service';
 
@@ -30,6 +31,22 @@ export class TodoResolver {
   async createTodo(@Args('todo') dto: CreateTodoDto, @GqlGetUser('id') userId: string): Promise<TodoDto> {
     try {
       const todo = await this.todoService.createTodoForUser(userId, dto);
+
+      return new TodoDto(todo);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @UseGuards(GqlIsAuth)
+  @Mutation((returns) => TodoDto)
+  async updateTodo(
+    @Args('id') todoId: string,
+    @Args('todo') dto: UpdateTodoDto,
+    @GqlGetUser('id') userId: string,
+  ): Promise<TodoDto> {
+    try {
+      const todo = await this.todoService.updateTodo(userId, todoId, dto);
 
       return new TodoDto(todo);
     } catch (error) {

@@ -9,6 +9,7 @@ input CreateTodoDto {
 
 type Mutation {
   createTodo(todo: CreateTodoDto!): TodoDto!
+  updateTodo(id: String!, todo: UpdateTodoDto!): TodoDto!
 }
 
 type Query {
@@ -21,4 +22,9 @@ type TodoDto {
   description: String
   id: String!
   title: String!
+}
+
+input UpdateTodoDto {
+  description: String
+  title: String
 }

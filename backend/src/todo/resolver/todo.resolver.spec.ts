@@ -1,4 +1,4 @@
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { ForbiddenException, INestApplication, NotFoundException, ValidationPipe } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { gql } from 'apollo-server-express';
 
@@ -74,7 +74,7 @@ describe('TodoResolver', () => {
       expect(response.data.todos).toMatchObject([]);
     });
 
-    it('throws Forbidden error if no user is connected', async () => {
+    it('returns a Forbidden error if no user is connected', async () => {
       const response = await apolloClient.query({
         query: gql`
           query todos {
@@ -179,15 +179,11 @@ describe('TodoResolver', () => {
     it('returns an error if no title is given', async () => {
       const user = createUser({ token: 'token' });
       userRepository.users = [user];
-      const body: CreateTodoDto = {
-        title: '',
-        description: 'description',
-      };
 
       const response = await apolloClient.mutate({
         integrationContextArgument: {
           req: {
-            user: createUser(),
+            user,
           },
         },
         mutation: gql`
@@ -208,6 +204,117 @@ describe('TodoResolver', () => {
       });
 
       expect(response.errors).toHaveLength(1);
+    });
+  });
+
+  describe('editTodo', () => {
+    it('edit a todo', async () => {
+      const user = createUser({ token: 'token' });
+      userRepository.users = [user];
+      const body: CreateTodoDto = {
+        title: 'edited title',
+        description: 'edited description',
+      };
+      const todo = createTodo({ ...body, user_id: user.id, id: 'id-1' });
+
+      await todoService.updateTodo.mockResolvedValueOnce(todo);
+
+      const response = await apolloClient.mutate({
+        integrationContextArgument: {
+          req: {
+            user,
+          },
+        },
+        mutation: gql`
+          mutation UpdateTodo($id: String!, $todo: UpdateTodoDto!) {
+            updateTodo(id: $id, todo: $todo) {
+              id
+              title
+              description
+              checked
+            }
+          }
+        `,
+        variables: {
+          id: todo.id,
+          todo: {
+            description: 'description',
+          },
+        },
+      });
+
+      expect(response.data.updateTodo).toMatchObject({
+        id: todo.id,
+        title: todo.title,
+        description: todo.description,
+        checked: todo.checked,
+      });
+    });
+
+    it('returns an error if todo is not one of the user', async () => {
+      const user = createUser({ token: 'token' });
+      userRepository.users = [user];
+
+      await todoService.updateTodo.mockRejectedValueOnce(new ForbiddenException());
+
+      const response = await apolloClient.mutate({
+        integrationContextArgument: {
+          req: {
+            user,
+          },
+        },
+        mutation: gql`
+          mutation UpdateTodo($id: String!, $todo: UpdateTodoDto!) {
+            updateTodo(id: $id, todo: $todo) {
+              id
+              title
+              description
+              checked
+            }
+          }
+        `,
+        variables: {
+          id: 'not-my-todo',
+          todo: {
+            description: 'description',
+          },
+        },
+      });
+
+      expect(response.errors?.[0]).toHaveProperty('message', 'Forbidden');
+    });
+
+    it('returns an error if todo does not exist', async () => {
+      const user = createUser({ token: 'token' });
+      userRepository.users = [user];
+
+      await todoService.updateTodo.mockRejectedValueOnce(new NotFoundException());
+
+      const response = await apolloClient.mutate({
+        integrationContextArgument: {
+          req: {
+            user,
+          },
+        },
+        mutation: gql`
+          mutation UpdateTodo($id: String!, $todo: UpdateTodoDto!) {
+            updateTodo(id: $id, todo: $todo) {
+              id
+              title
+              description
+              checked
+            }
+          }
+        `,
+        variables: {
+          id: 'not-found-todo',
+          todo: {
+            description: 'description',
+          },
+        },
+      });
+
+      expect(response.errors?.[0]).toHaveProperty('message', 'Not Found');
     });
   });
 });

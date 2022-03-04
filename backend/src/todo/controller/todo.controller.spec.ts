@@ -166,7 +166,7 @@ describe('TodoController', () => {
       await todoService.updateTodo.mockRejectedValueOnce(new NotFoundException());
 
       await agent
-        .patch(`/todos/not-my-todo`)
+        .patch(`/todos/not-found-todo`)
         .set('Authorization', `Bearer ${user.token}`)
         .send(body)
         .expect(HttpStatus.NOT_FOUND);

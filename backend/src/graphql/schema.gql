@@ -23,6 +23,7 @@ type Mutation {
   createTodo(todo: CreateTodoDto!): TodoDto!
   login(user: LogUserDto!): UserDto!
   signup(user: CreateUserDto!): UserDto!
+  updateTodo(id: String!, todo: UpdateTodoDto!): TodoDto!
 }
 
 type Query {
@@ -34,6 +35,11 @@ type TodoDto {
   description: String
   id: String!
   title: String!
+}
+
+input UpdateTodoDto {
+  description: String
+  title: String
 }
 
 type UserDto {
