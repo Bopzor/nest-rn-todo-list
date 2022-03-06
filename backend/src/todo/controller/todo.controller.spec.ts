@@ -1,23 +1,17 @@
 import { ForbiddenException, HttpStatus, INestApplication, NotFoundException, ValidationPipe } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
+import expect from 'expect';
 import request, { SuperAgentTest } from 'supertest';
 
 import { AuthorizationModule } from 'src/authorization/authorization.module';
 import { InMemoryUserRepository } from 'src/tests/in-memory-user.repository';
 import { createTodo, createUser } from 'src/tests/factories';
+import { MockTodoService } from 'src/tests/mocks.service';
 import { UserRepository } from 'src/user/repositories/user.repository';
 
 import { TodoModule } from '../todo.module';
 import { CreateTodoDto } from '../dtos/create-todo.dto';
 import { TodoService } from '../service/todo.service';
-
-class MockTodoService extends TodoService {
-  getAllForUser = jest.fn();
-  createTodo = jest.fn();
-  updateTodo = jest.fn();
-  toggleTodo = jest.fn();
-  deleteTodo = jest.fn();
-}
 
 describe('TodoController', () => {
   let app: INestApplication;
@@ -71,7 +65,7 @@ describe('TodoController', () => {
       };
       const todo = createTodo({ ...body, user_id: user.id });
 
-      await todoService.createTodo.mockResolvedValueOnce(todo);
+      await todoService.createTodoForUser.mockResolvedValueOnce(todo);
 
       const response = await agent
         .post('/todos')
@@ -95,7 +89,7 @@ describe('TodoController', () => {
       };
       const todo = createTodo({ ...body, user_id: user.id });
 
-      await todoService.createTodo.mockResolvedValueOnce(todo);
+      await todoService.createTodoForUser.mockResolvedValueOnce(todo);
 
       await agent.post('/todos').set('Authorization', `Bearer ${user.token}`).send(body).expect(HttpStatus.CREATED);
     });

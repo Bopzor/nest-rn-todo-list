@@ -1,4 +1,5 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
+import expect from 'expect';
 
 import { createUser } from 'src/tests/factories';
 import { InMemoryUserRepository } from 'src/tests/in-memory-user.repository';
@@ -37,7 +38,7 @@ describe('AuthenticationService', () => {
       });
       const expectedUser = createUser({ token: 'token' });
 
-      expect(createdUser).toMatchObject(expectedUser);
+      expect(createdUser).toEqual(expectedUser);
 
       expect(userRepository.users[0]).toMatchObject({
         id: expectedUser.id,
@@ -68,7 +69,7 @@ describe('AuthenticationService', () => {
         password: 'p4ssWord',
       });
 
-      expect(loggedUser).toMatchObject(user);
+      expect(loggedUser).toEqual(user);
 
       expect(userRepository.users[0].token).toEqual('token');
     });

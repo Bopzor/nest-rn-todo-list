@@ -1,8 +1,10 @@
 import { HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import request, { SuperAgentTest } from 'supertest';
+import expect from 'expect';
 
 import { createUser } from 'src/tests/factories';
+import { MockAuthenticationService } from 'src/tests/mocks.service';
 
 import { AuthenticationModule } from '../authentication.module';
 import { CreateUserDto } from '../dtos/create-user.dto';
@@ -10,11 +12,6 @@ import { LogUserDto } from '../dtos/log-user.dto';
 import { InvalidCredentialsError } from '../errors/invalid-credentials.error';
 import { UsernameAlreadyExistError } from '../errors/username-already-exist.error';
 import { AuthenticationService } from '../service/authentication.service';
-
-class MockAuthenticationService extends AuthenticationService {
-  createUser = jest.fn();
-  logUser = jest.fn();
-}
 
 describe('AuthenticationController', () => {
   let app: INestApplication;

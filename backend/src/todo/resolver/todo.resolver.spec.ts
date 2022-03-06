@@ -1,6 +1,7 @@
 import { ForbiddenException, INestApplication, NotFoundException, ValidationPipe } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { gql } from 'apollo-server-express';
+import expect from 'expect';
 
 import { AuthorizationModule } from 'src/authorization/authorization.module';
 import { createTodo, createUser } from 'src/tests/factories';
@@ -9,18 +10,11 @@ import { ResolverForTest } from 'src/tests/test-query.revolver';
 import { UserRepository } from 'src/user/repositories/user.repository';
 import { InMemoryUserRepository } from 'src/tests/in-memory-user.repository';
 import { TestGraphqlModule } from 'src/tests/graphql/graphql.module';
+import { MockTodoService } from 'src/tests/mocks.service';
 
 import { TodoService } from '../service/todo.service';
 import { TodoModule } from '../todo.module';
 import { CreateTodoDto } from '../dtos/create-todo.dto';
-
-class MockTodoService extends TodoService {
-  getAllForUser = jest.fn();
-  createTodo = jest.fn();
-  updateTodo = jest.fn();
-  toggleTodo = jest.fn();
-  deleteTodo = jest.fn();
-}
 
 describe('TodoResolver', () => {
   let app: INestApplication;
@@ -101,7 +95,7 @@ describe('TodoResolver', () => {
       };
       const todo = createTodo({ ...body, user_id: user.id });
 
-      await todoService.createTodo.mockResolvedValueOnce(todo);
+      await todoService.createTodoForUser.mockResolvedValueOnce(todo);
 
       const response = await apolloClient.mutate({
         integrationContextArgument: {
@@ -143,7 +137,7 @@ describe('TodoResolver', () => {
       };
       const todo = createTodo({ ...body, description: undefined, user_id: user.id });
 
-      await todoService.createTodo.mockResolvedValueOnce(todo);
+      await todoService.createTodoForUser.mockResolvedValueOnce(todo);
 
       const response = await apolloClient.mutate({
         integrationContextArgument: {

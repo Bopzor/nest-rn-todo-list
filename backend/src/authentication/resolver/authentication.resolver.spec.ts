@@ -1,21 +1,18 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { gql } from 'apollo-server-express';
+import expect from 'expect';
 
 import { createUser } from 'src/tests/factories';
 import { ApolloServerTestClient, createApolloTestClient } from 'src/tests/create-apollo-test-client.ts';
 import { ResolverForTest } from 'src/tests/test-query.revolver';
 import { TestGraphqlModule } from 'src/tests/graphql/graphql.module';
+import { MockAuthenticationService } from 'src/tests/mocks.service';
 
 import { AuthenticationModule } from '../authentication.module';
 import { UsernameAlreadyExistError } from '../errors/username-already-exist.error';
 import { InvalidCredentialsError } from '../errors/invalid-credentials.error';
 import { AuthenticationService } from '../service/authentication.service';
-
-class MockAuthenticationService extends AuthenticationService {
-  createUser = jest.fn();
-  logUser = jest.fn();
-}
 
 describe('AuthenticationResolver', () => {
   let app: INestApplication;

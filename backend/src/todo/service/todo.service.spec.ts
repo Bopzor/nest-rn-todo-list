@@ -1,5 +1,6 @@
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
+import expect from 'expect';
 
 import { InMemoryTodoRepository } from 'src/tests/in-memory-todo.repository';
 import { createTodo, createUser } from 'src/tests/factories';

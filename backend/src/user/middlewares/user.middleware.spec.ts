@@ -1,5 +1,7 @@
 import { UnauthorizedException } from '@nestjs/common';
 import { Response } from 'express';
+import expect from 'expect';
+import { fn } from 'jest-mock';
 
 import { createUser } from 'src/tests/factories';
 import { InMemoryUserRepository } from 'src/tests/in-memory-user.repository';
@@ -10,7 +12,7 @@ import { User } from '../entities/user.entity';
 import { UserMiddleware } from './user.middleware';
 
 describe('UserMiddleware', () => {
-  const next = jest.fn();
+  const next = fn();
 
   beforeEach(() => {
     next.mockReset();
