@@ -45,4 +45,16 @@ export class InMemoryTodosAdapter implements TodosPort {
 
     return toggledTodo;
   }
+
+  async deleteTodo(_token: string, id: string): Promise<string> {
+    const todoIdx = this.todos.findIndex((t) => t.id === id);
+
+    // prettier-ignore
+    this.todos = [
+      ...this.todos.slice(0, todoIdx),
+      ...this.todos.slice(todoIdx + 1)
+    ]
+
+    return id;
+  }
 }

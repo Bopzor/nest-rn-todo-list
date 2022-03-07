@@ -3,7 +3,7 @@ import { ICreateTodoDto, ITodoDto, IUpdateTodoDto } from 'todo-shared';
 import { selectUserToken } from '../authentication/authenticationSlice';
 import { AppThunkAction } from '../store';
 
-import { addTodo, editTodo, setTodos } from './todosSlice';
+import { addTodo, editTodo, removeTodo, setTodos } from './todosSlice';
 
 export const loadTodos =
   (): AppThunkAction<Promise<ITodoDto[] | undefined>> =>
@@ -80,6 +80,26 @@ export const toggleTodo =
       dispatch(editTodo({ id, changes: { checked: toggledTodo.checked } }));
 
       return toggledTodo;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+export const deleteTodo =
+  (id: string): AppThunkAction<Promise<string | undefined>> =>
+  async (dispatch, getState, { todosGateway }) => {
+    try {
+      const token = selectUserToken(getState());
+
+      if (!token) {
+        throw new Error('No user is authenticated');
+      }
+
+      const deletedTodoId = await todosGateway.deleteTodo(token, id);
+
+      dispatch(removeTodo(id));
+
+      return deletedTodoId;
     } catch (error) {
       console.error(error);
     }

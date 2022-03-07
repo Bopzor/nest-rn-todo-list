@@ -12,10 +12,11 @@ export const todosSlice = createSlice({
     setTodos: todosAdapter.setAll,
     addTodo: todosAdapter.addOne,
     editTodo: todosAdapter.updateOne,
+    removeTodo: todosAdapter.removeOne,
   },
 });
 
-export const { addTodo, editTodo, setTodos } = todosSlice.actions;
+export const { addTodo, editTodo, removeTodo, setTodos } = todosSlice.actions;
 
 export const todosSelector = todosAdapter.getSelectors<RootState>((state) => state.todos);
 export const selectTodos = todosSelector.selectAll;

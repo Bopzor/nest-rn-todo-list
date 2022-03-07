@@ -74,4 +74,21 @@ export class FetchTodosAdapter implements TodosPort {
       throw error;
     }
   }
+
+  async deleteTodo(token: string, id: string): Promise<string> {
+    try {
+      await fetch(Constants?.manifest?.extra?.API_URL + `/todos/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      return id;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

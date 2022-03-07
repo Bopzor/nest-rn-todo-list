@@ -1,7 +1,7 @@
 import { setUser } from '../authentication/authenticationSlice';
 import Store from '../tests/Store';
 
-import { createTodo, loadTodos, toggleTodo, updateTodo } from './todos';
+import { createTodo, deleteTodo, loadTodos, toggleTodo, updateTodo } from './todos';
 import { selectTodos, setTodos } from './todosSlice';
 
 describe('todos', () => {
@@ -99,6 +99,32 @@ describe('todos', () => {
       await store.dispatch(toggleTodo(todo.id));
 
       expect(store.select(selectTodos)[0].checked).toEqual(true);
+    });
+  });
+
+  describe('deleteTodo', () => {
+    it('deletes the todo', async () => {
+      const user = {
+        username: 'azot',
+        password: 'p4ssWord',
+        firstName: 'Azot',
+        lastName: 'Toza',
+        id: '1',
+        token: 'token',
+      };
+      store.dispatch(setUser(user));
+      const todo = {
+        id: 'todo-1',
+        title: 'title',
+        description: 'description',
+        checked: false,
+      };
+      store.dispatch(setTodos([todo]));
+      store.todosGateway.todos = [todo];
+
+      await store.dispatch(deleteTodo(todo.id));
+
+      expect(store.select(selectTodos)).toHaveLength(0);
     });
   });
 });

@@ -3,6 +3,7 @@ import { ICreateTodoDto, ITodoDto, IUpdateTodoDto } from 'todo-shared';
 import {
   Mutation,
   MutationCreateTodoArgs,
+  MutationDeleteTodoArgs,
   MutationToggleTodoArgs,
   MutationUpdateTodoArgs,
   Query,
@@ -120,6 +121,31 @@ export class GraphQLTodosAdapter implements TodosPort {
       }
 
       return { ...result.data, description: result.data.description ?? undefined };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteTodo(token: string, id: string): Promise<string> {
+    try {
+      this.setAuthorizationHeaderForApolloClient(token);
+
+      const result = await this.apolloClient.mutate<Mutation['deleteTodo'], MutationDeleteTodoArgs>({
+        mutation: gql`
+          mutation DeleteTodo($id: String!) {
+            deleteTodo(id: $id)
+          }
+        `,
+        variables: {
+          id,
+        },
+      });
+
+      if (!result.data) {
+        throw new Error();
+      }
+
+      return id;
     } catch (error) {
       throw error;
     }
