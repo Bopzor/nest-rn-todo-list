@@ -1,37 +1,23 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 import { ITodoDto } from 'todo-shared';
 
 import { RootState } from '../store';
 
-export interface TodosState {
-  todos: ITodoDto[];
-  error: string | null;
-}
-
-const initialState: TodosState = {
-  todos: [],
-  error: null,
-};
+const todosAdapter = createEntityAdapter<ITodoDto>();
 
 export const todosSlice = createSlice({
   name: 'todos',
-  initialState,
+  initialState: todosAdapter.getInitialState(),
   reducers: {
-    setTodos: (state, { payload: todos }: PayloadAction<TodosState['todos']>) => {
-      state.todos = todos;
-    },
-    addTodo: (state, { payload: todo }: PayloadAction<ITodoDto>) => {
-      state.todos.push(todo);
-    },
-    setTodosError: (state, { payload: error }: PayloadAction<TodosState['error']>) => {
-      state.error = error;
-    },
+    setTodos: todosAdapter.setAll,
+    addTodo: todosAdapter.addOne,
+    editTodo: todosAdapter.updateOne,
   },
 });
 
-export const { addTodo, setTodos, setTodosError } = todosSlice.actions;
+export const { addTodo, editTodo, setTodos } = todosSlice.actions;
 
-export const selectTodos = (state: RootState) => state.todos.todos;
-export const selectTodoError = (state: RootState) => state.todos.error;
+export const todosSelector = todosAdapter.getSelectors<RootState>((state) => state.todos);
+export const selectTodos = todosSelector.selectAll;
 
 export default todosSlice.reducer;

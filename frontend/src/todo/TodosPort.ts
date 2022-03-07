@@ -1,6 +1,7 @@
-import { ICreateTodoDto, ITodoDto } from 'todo-shared';
+import { ICreateTodoDto, ITodoDto, IUpdateTodoDto } from 'todo-shared';
 
 export interface TodosPort {
   loadTodos(token: string): Promise<ITodoDto[]>;
   createTodo(token: string, todo: ICreateTodoDto): Promise<ITodoDto>;
+  updateTodo(token: string, params: { id: string; changes: IUpdateTodoDto }): Promise<ITodoDto>;
 }

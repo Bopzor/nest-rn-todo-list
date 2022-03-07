@@ -1,6 +1,6 @@
 import { ApolloClient, ApolloLink, gql, HttpLink, NextLink, NormalizedCacheObject, Operation } from '@apollo/client';
-import { ICreateTodoDto, ITodoDto } from 'todo-shared';
-import { Mutation, MutationCreateTodoArgs, Query } from 'todo-shared/graphql';
+import { ICreateTodoDto, ITodoDto, IUpdateTodoDto } from 'todo-shared';
+import { Mutation, MutationCreateTodoArgs, MutationUpdateTodoArgs, Query } from 'todo-shared/graphql';
 
 import { TodosPort } from './TodosPort';
 
@@ -54,7 +54,38 @@ export class GraphQLTodosAdapter implements TodosPort {
         throw new Error();
       }
 
-      return { ...result.data, description: todo.description ?? undefined };
+      return { ...result.data, description: result.data.description ?? undefined };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateTodo(token: string, params: { id: string; changes: IUpdateTodoDto }): Promise<ITodoDto> {
+    try {
+      this.setAuthorizationHeaderForApolloClient(token);
+
+      const result = await this.apolloClient.mutate<Mutation['updateTodo'], MutationUpdateTodoArgs>({
+        mutation: gql`
+          mutation UpdateTodo($id: String, $todo: UpdateTodoDto!) {
+            updateTodo(id: $id, todo: $todo) {
+              title
+              description
+              checked
+            },
+            variables: {
+              id: params.id,
+              todo: {
+                ...params.changes
+              }
+            }
+        `,
+      });
+
+      if (!result.data) {
+        throw new Error();
+      }
+
+      return { ...result.data, description: result.data.description ?? undefined };
     } catch (error) {
       throw error;
     }

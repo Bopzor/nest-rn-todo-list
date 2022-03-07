@@ -1,4 +1,4 @@
-import { ICreateTodoDto, ITodoDto } from 'todo-shared';
+import { ICreateTodoDto, ITodoDto, IUpdateTodoDto } from 'todo-shared';
 
 import { TodosPort } from '../todo/TodosPort';
 
@@ -15,5 +15,19 @@ export class InMemoryTodosAdapter implements TodosPort {
     this.todos.push(createdTodo);
 
     return createdTodo;
+  }
+
+  async updateTodo(_token: string, params: { id: string; changes: IUpdateTodoDto }): Promise<ITodoDto> {
+    const todoIdx = this.todos.findIndex((t) => t.id === params.id);
+    const updatedTodo = { ...this.todos[todoIdx], ...params.changes };
+
+    // prettier-ignore
+    this.todos = [
+      ...this.todos.slice(0, todoIdx),
+      updatedTodo,
+      ...this.todos.slice(todoIdx + 1)
+    ]
+
+    return updatedTodo;
   }
 }

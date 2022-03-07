@@ -1,6 +1,6 @@
 import Constants from 'expo-constants';
 
-import { ICreateTodoDto, ITodoDto } from 'todo-shared';
+import { ICreateTodoDto, ITodoDto, IUpdateTodoDto } from 'todo-shared';
 
 import { TodosPort } from './TodosPort';
 
@@ -32,6 +32,24 @@ export class FetchTodosAdapter implements TodosPort {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(todo),
+      });
+
+      return await result.json();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateTodo(token: string, params: { id: string; changes: IUpdateTodoDto }): Promise<ITodoDto> {
+    try {
+      const result = await fetch(Constants?.manifest?.extra?.API_URL + `/todos/${params.id}`, {
+        method: 'PATCH',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(params.changes),
       });
 
       return await result.json();

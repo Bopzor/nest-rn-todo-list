@@ -1,8 +1,8 @@
 import { setUser } from '../authentication/authenticationSlice';
 import Store from '../tests/Store';
 
-import { createTodo, loadTodos } from './todos';
-import { selectTodos } from './todosSlice';
+import { createTodo, loadTodos, updateTodo } from './todos';
+import { selectTodos, setTodos } from './todosSlice';
 
 describe('todos', () => {
   let store: Store;
@@ -47,6 +47,31 @@ describe('todos', () => {
       const createdTodo = await store.dispatch(createTodo(todo));
 
       expect(store.select(selectTodos)[0]).toEqual(createdTodo);
+    });
+  });
+
+  describe('updateTodo', () => {
+    it('updates the todo', async () => {
+      const user = {
+        username: 'azot',
+        password: 'p4ssWord',
+        firstName: 'Azot',
+        lastName: 'Toza',
+        id: '1',
+        token: 'token',
+      };
+      store.dispatch(setUser(user));
+      const todo = {
+        id: 'todo-1',
+        title: 'title',
+        description: 'description',
+      };
+      store.dispatch(setTodos([todo]));
+      store.todosGateway.todos = [todo];
+
+      const updatedTodo = await store.dispatch(updateTodo(todo.id, { changes: { title: 'edited title' } }));
+
+      expect(store.select(selectTodos)[0]).toEqual(updatedTodo);
     });
   });
 });
