@@ -31,6 +31,7 @@ export default {
     },
     extra: {
       GRAPHQL_URL: process.env.GRAPHQL_URL,
+      API_URL: process.env.API_URL,
     },
   },
 };
