@@ -64,3 +64,23 @@ export const updateTodo =
       console.error(error);
     }
   };
+
+export const toggleTodo =
+  (id: string): AppThunkAction<Promise<ITodoDto | undefined>> =>
+  async (dispatch, getState, { todosGateway }) => {
+    try {
+      const token = selectUserToken(getState());
+
+      if (!token) {
+        throw new Error('No user is authenticated');
+      }
+
+      const toggledTodo = await todosGateway.toggleTodo(token, id);
+
+      dispatch(editTodo({ id, changes: { checked: toggledTodo.checked } }));
+
+      return toggledTodo;
+    } catch (error) {
+      console.error(error);
+    }
+  };

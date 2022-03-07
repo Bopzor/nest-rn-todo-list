@@ -10,7 +10,7 @@ export class InMemoryTodosAdapter implements TodosPort {
   }
 
   async createTodo(_token: string, todo: ICreateTodoDto): Promise<ITodoDto> {
-    const createdTodo = { ...todo, id: 'todo-1' };
+    const createdTodo = { ...todo, id: 'todo-1', checked: false };
 
     this.todos.push(createdTodo);
 
@@ -29,5 +29,20 @@ export class InMemoryTodosAdapter implements TodosPort {
     ]
 
     return updatedTodo;
+  }
+
+  async toggleTodo(_token: string, id: string): Promise<ITodoDto> {
+    const todoIdx = this.todos.findIndex((t) => t.id === id);
+
+    const toggledTodo = { ...this.todos[todoIdx], checked: !this.todos[todoIdx].checked };
+
+    // prettier-ignore
+    this.todos = [
+      ...this.todos.slice(0, todoIdx),
+      toggledTodo,
+      ...this.todos.slice(todoIdx + 1)
+    ]
+
+    return toggledTodo;
   }
 }

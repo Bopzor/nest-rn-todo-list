@@ -57,4 +57,21 @@ export class FetchTodosAdapter implements TodosPort {
       throw error;
     }
   }
+
+  async toggleTodo(token: string, id: string): Promise<ITodoDto> {
+    try {
+      const result = await fetch(Constants?.manifest?.extra?.API_URL + `/todos/${id}/toggle`, {
+        method: 'PATCH',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      return await result.json();
+    } catch (error) {
+      throw error;
+    }
+  }
 }

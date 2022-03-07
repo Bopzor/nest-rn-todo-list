@@ -1,7 +1,7 @@
 import { setUser } from '../authentication/authenticationSlice';
 import Store from '../tests/Store';
 
-import { createTodo, loadTodos, updateTodo } from './todos';
+import { createTodo, loadTodos, toggleTodo, updateTodo } from './todos';
 import { selectTodos, setTodos } from './todosSlice';
 
 describe('todos', () => {
@@ -65,6 +65,7 @@ describe('todos', () => {
         id: 'todo-1',
         title: 'title',
         description: 'description',
+        checked: false,
       };
       store.dispatch(setTodos([todo]));
       store.todosGateway.todos = [todo];
@@ -72,6 +73,32 @@ describe('todos', () => {
       const updatedTodo = await store.dispatch(updateTodo(todo.id, { changes: { title: 'edited title' } }));
 
       expect(store.select(selectTodos)[0]).toEqual(updatedTodo);
+    });
+  });
+
+  describe('toggleTodo', () => {
+    it('toggles the todo status', async () => {
+      const user = {
+        username: 'azot',
+        password: 'p4ssWord',
+        firstName: 'Azot',
+        lastName: 'Toza',
+        id: '1',
+        token: 'token',
+      };
+      store.dispatch(setUser(user));
+      const todo = {
+        id: 'todo-1',
+        title: 'title',
+        description: 'description',
+        checked: false,
+      };
+      store.dispatch(setTodos([todo]));
+      store.todosGateway.todos = [todo];
+
+      await store.dispatch(toggleTodo(todo.id));
+
+      expect(store.select(selectTodos)[0].checked).toEqual(true);
     });
   });
 });

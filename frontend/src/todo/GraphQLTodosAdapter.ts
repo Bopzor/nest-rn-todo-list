@@ -1,6 +1,12 @@
 import { ApolloClient, ApolloLink, gql, HttpLink, NextLink, NormalizedCacheObject, Operation } from '@apollo/client';
 import { ICreateTodoDto, ITodoDto, IUpdateTodoDto } from 'todo-shared';
-import { Mutation, MutationCreateTodoArgs, MutationUpdateTodoArgs, Query } from 'todo-shared/graphql';
+import {
+  Mutation,
+  MutationCreateTodoArgs,
+  MutationToggleTodoArgs,
+  MutationUpdateTodoArgs,
+  Query,
+} from 'todo-shared/graphql';
 
 import { TodosPort } from './TodosPort';
 
@@ -44,10 +50,10 @@ export class GraphQLTodosAdapter implements TodosPort {
               description
               checked
             },
-            variables: {
-              todo
-            }
         `,
+        variables: {
+          todo,
+        },
       });
 
       if (!result.data) {
@@ -72,13 +78,41 @@ export class GraphQLTodosAdapter implements TodosPort {
               description
               checked
             },
-            variables: {
-              id: params.id,
-              todo: {
-                ...params.changes
-              }
-            }
         `,
+        variables: {
+          id: params.id,
+          todo: {
+            ...params.changes,
+          },
+        },
+      });
+
+      if (!result.data) {
+        throw new Error();
+      }
+
+      return { ...result.data, description: result.data.description ?? undefined };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async toggleTodo(token: string, id: string): Promise<ITodoDto> {
+    try {
+      this.setAuthorizationHeaderForApolloClient(token);
+
+      const result = await this.apolloClient.mutate<Mutation['toggleTodo'], MutationToggleTodoArgs>({
+        mutation: gql`
+          mutation ToggleTodo($id: String, $todo: ToggleTodoDto!) {
+            toggleTodo(id: $id) {
+              title
+              description
+              checked
+            },
+        `,
+        variables: {
+          id,
+        },
       });
 
       if (!result.data) {
