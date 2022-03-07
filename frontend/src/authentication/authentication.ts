@@ -2,14 +2,21 @@ import { ISignupUserDto, IUserDto } from 'todo-shared';
 
 import { AppThunkAction } from '../store';
 
-import { setUser } from './authenticationSlice';
+import { setAuthenticationError, setUser } from './authenticationSlice';
 
 export const signup =
-  (user: ISignupUserDto): AppThunkAction<Promise<IUserDto>> =>
+  (user: ISignupUserDto): AppThunkAction<Promise<IUserDto | undefined>> =>
   async (dispatch, _getState, { authenticationGateway }) => {
-    const createdUser = await authenticationGateway.signup(user);
+    try {
+      const createdUser = await authenticationGateway.signup(user);
 
-    dispatch(setUser(createdUser));
+      dispatch(setUser(createdUser));
+      dispatch(setAuthenticationError(null));
 
-    return createdUser;
+      return createdUser;
+    } catch (error) {
+      if (error instanceof Error) {
+        dispatch(setAuthenticationError(error.message));
+      }
+    }
   };

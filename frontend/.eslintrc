@@ -11,13 +11,13 @@
   },
   "plugins": [
     "simple-import-sort",
-    "@typescript-eslint"
+    "@typescript-eslint/eslint-plugin"
   ],
   "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
   ],
+  "root": true,
   "ignorePatterns": "**/*.js",
   "rules": {
     "no-console": "off",

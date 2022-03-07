@@ -2,14 +2,24 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { registerRootComponent } from 'expo';
+import Constants from 'expo-constants';
 import { StatusBar } from 'expo-status-bar';
 
+import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { Provider } from 'react-redux';
 
+import { GraphQLAuthenticationAdapter } from './authentication/GraphQLAuthenticationAdapter';
 import { SignUpView } from './authentication/SignUpView';
 import { createStore } from './store';
 
-const store = createStore({});
+const apolloClient = new ApolloClient({
+  uri: Constants?.manifest?.extra?.GRAPHQL_URL,
+  cache: new InMemoryCache(),
+});
+
+const store = createStore({
+  authenticationGateway: new GraphQLAuthenticationAdapter(apolloClient),
+});
 
 const App = () => {
   return (
