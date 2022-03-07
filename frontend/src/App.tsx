@@ -9,9 +9,9 @@ import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { Provider } from 'react-redux';
 
 import { AuthenticationScreen } from './authentication/AuthenticationScreen';
-import { FetchAuthenticationAdapter } from './authentication/FetchAuthenticationAdapter';
 import { GraphQLAuthenticationAdapter } from './authentication/GraphQLAuthenticationAdapter';
 import { createStore } from './store';
+import { GraphQLTodosAdapter } from './todo/GraphQLTodosAdapter';
 
 const apolloClient = new ApolloClient({
   uri: Constants?.manifest?.extra?.GRAPHQL_URL,
@@ -19,8 +19,8 @@ const apolloClient = new ApolloClient({
 });
 
 const store = createStore({
-  // authenticationGateway: new GraphQLAuthenticationAdapter(apolloClient),
-  authenticationGateway: new FetchAuthenticationAdapter(),
+  authenticationGateway: new GraphQLAuthenticationAdapter(apolloClient),
+  todosGateway: new GraphQLTodosAdapter(Constants?.manifest?.extra?.GRAPHQL_URL, apolloClient),
 });
 
 const App = () => {

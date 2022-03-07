@@ -29,6 +29,7 @@ export const authenticationSlice = createSlice({
 export const { setUser, setAuthenticationError } = authenticationSlice.actions;
 
 export const selectUser = (state: RootState) => state.authentication.user;
+export const selectUserToken = (state: RootState) => state.authentication.user?.token;
 export const selectAuthenticationError = (state: RootState) => state.authentication.error;
 
 export default authenticationSlice.reducer;

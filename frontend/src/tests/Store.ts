@@ -1,16 +1,21 @@
 import { AppDispatch, AppSelector, createStore } from '../store';
+
 import { InMemoryAuthenticationAdapter } from './InMemoryAuthenticationAdapter';
+import { InMemoryTodosAdapter } from './InMemoryTodosAdapter';
 
 class Store {
   store;
 
   authenticationGateway: InMemoryAuthenticationAdapter;
+  todosGateway: InMemoryTodosAdapter;
 
   constructor() {
     this.authenticationGateway = new InMemoryAuthenticationAdapter();
+    this.todosGateway = new InMemoryTodosAdapter();
 
     this.store = createStore({
       authenticationGateway: this.authenticationGateway,
+      todosGateway: this.todosGateway,
     });
   }
 

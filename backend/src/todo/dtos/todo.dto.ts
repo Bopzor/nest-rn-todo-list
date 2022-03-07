@@ -1,10 +1,11 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Exclude } from 'class-transformer';
+import { ITodoDto } from 'todo-shared';
 
 import { Todo } from '../entities/todo.entity';
 
 @ObjectType()
-export class TodoDto {
+export class TodoDto implements ITodoDto {
   @Field()
   id!: string;
 

@@ -1,17 +1,20 @@
 import { AnyAction, configureStore, Selector, ThunkAction } from '@reduxjs/toolkit';
 
-import authenticationReducer from './authentication/authenticationSlice';
-
 import { AuthenticationPort } from './authentication/AuthenticationPort';
+import authenticationReducer from './authentication/authenticationSlice';
+import { TodosPort } from './todo/TodosPort';
+import todosReducer from './todo/todosSlice';
 
 type Dependencies = {
   authenticationGateway: AuthenticationPort;
+  todosGateway: TodosPort;
 };
 
 export const createStore = (dependencies: Dependencies) =>
   configureStore({
     reducer: {
       authentication: authenticationReducer,
+      todos: todosReducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
