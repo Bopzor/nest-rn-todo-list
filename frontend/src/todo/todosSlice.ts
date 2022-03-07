@@ -20,13 +20,16 @@ export const todosSlice = createSlice({
     setTodos: (state, { payload: todos }: PayloadAction<TodosState['todos']>) => {
       state.todos = todos;
     },
+    addTodo: (state, { payload: todo }: PayloadAction<ITodoDto>) => {
+      state.todos.push(todo);
+    },
     setTodosError: (state, { payload: error }: PayloadAction<TodosState['error']>) => {
       state.error = error;
     },
   },
 });
 
-export const { setTodos, setTodosError } = todosSlice.actions;
+export const { addTodo, setTodos, setTodosError } = todosSlice.actions;
 
 export const selectTodos = (state: RootState) => state.todos.todos;
 export const selectTodoError = (state: RootState) => state.todos.error;
