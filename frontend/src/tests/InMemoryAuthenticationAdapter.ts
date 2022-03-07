@@ -1,4 +1,4 @@
-import { ISignupUserDto, IUserDto } from 'todo-shared';
+import { ILoginUserDto, ISignupUserDto, IUserDto } from 'todo-shared';
 
 import { AuthenticationPort } from '../authentication/AuthenticationPort';
 
@@ -19,5 +19,15 @@ export class InMemoryAuthenticationAdapter implements AuthenticationPort {
       firstName: user.firstName,
       lastName: user.lastName,
     };
+  }
+
+  async login(user: ILoginUserDto): Promise<IUserDto> {
+    const existingUser = this.users.find((u) => u.username === user.username);
+
+    if (!existingUser) {
+      throw new Error('User not found');
+    }
+
+    return existingUser;
   }
 }

@@ -8,6 +8,7 @@ import { StatusBar } from 'expo-status-bar';
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { Provider } from 'react-redux';
 
+import { AuthenticationScreen } from './authentication/AuthenticationScreen';
 import { GraphQLAuthenticationAdapter } from './authentication/GraphQLAuthenticationAdapter';
 import { SignUpView } from './authentication/SignUpView';
 import { createStore } from './store';
@@ -25,7 +26,7 @@ const App = () => {
   return (
     <Provider store={store}>
       <View style={styles.container}>
-        <SignUpView />
+        <AuthenticationScreen />
         <StatusBar style="auto" />
       </View>
     </Provider>
