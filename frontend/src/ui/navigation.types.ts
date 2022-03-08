@@ -1,9 +1,15 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 export type RootStackParamList = {
-  Auth: {
-    mode: 'login' | 'signup';
+  Login: {
+    username?: string;
+    password?: string;
+  };
+  Signup: {
+    username?: string;
+    password?: string;
   };
 };
 
-export type AuthenticationScreenProps = NativeStackScreenProps<RootStackParamList, 'Auth'>;
+export type LoginScreenProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
+export type SignupScreenProps = NativeStackScreenProps<RootStackParamList, 'Signup'>;
